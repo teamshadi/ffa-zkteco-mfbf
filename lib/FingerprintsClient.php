@@ -71,7 +71,7 @@ function putStates($sts) {
 }
 
 function putLocks() {
-  $secQ = file_get_contents(ROOT_DB_API."/sql/update_MF_USERS_LOCK.sql");
+  $secQ = file_get_contents(__DIR__."/update_MF_USERS_LOCK.sql");
   odbc_exec($this->connection,"truncate table MF_USERS_LOCK");
   odbc_exec($this->connection,$secQ);
 }
