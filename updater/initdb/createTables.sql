@@ -1,15 +1,15 @@
 -- On FFA 2.0 mysql datbabase
 -- The following is how I got to this file: mdb-schema ~/att2000.mdb mysql > att2000.sql
 
+----------------
 -- Before launching this, create the user for fingerprints
 -- Use the same username and pass as in config.sh mysqlUser and mysqlPass
 -- CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
 -- GRANT ALL PRIVILEGES ON ffa_price_farm.* To 'username'@'localhost' IDENTIFIED BY 'password';
-
-CREATE DATABASE IF NOT EXISTS ffa_price_farm;
-
-use ffa_price_farm;
-
+----------------
+-- CREATE DATABASE IF NOT EXISTS ffa_price_farm;
+-- use ffa_price_farm;
+----------------
 CREATE TABLE CHECKINOUT
  (
  id int(10) unsigned NOT NULL auto_increment, -- added by Shadi... not in original table from fingerprint peopl

@@ -1,0 +1,7 @@
+#!/usr/bin/expect
+eval spawn mysql_config_editor set --login-path=myhostalias \
+  --host=pmo.ffaprivatebank.com --port=3306 \
+  --user=ffaFingerprints --password
+expect "Enter password:"
+send "fp1298\r"
+interact

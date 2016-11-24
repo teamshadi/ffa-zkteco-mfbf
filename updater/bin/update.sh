@@ -3,12 +3,20 @@
 
 set -e
 ROOT=`dirname $0` # http://stackoverflow.com/a/59916
-source $ROOT/../config.sh
+source $ROOT/../etc/config.sh
+
+mkdir -p $workdir
+
+# base filename
+# http://stackoverflow.com/a/2664746/4126114
+mdbLocal="${workdir}/${mdbRemote##*/}"
+df="${workdir}/lastupdate.txt"
+lockfile="${workdir}/lock.txt"
 
 emailTo="s.akiki@ffaprivatebank.com"
 # emailTo="s.akiki@ffaprivatebank.com M.Moawad@ffaprivatebank.com"
-notiffile="${fpetc}/fingerprints-notif.txt"
-mysqlCmd="mysql --host pmo.ffaprivatebank.com --port 3306 --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm"
+notiffile="${workdir}/fingerprints-notif.txt"
+
 
 # Test mdb-export is installed
 # This would fail if not
@@ -27,7 +35,7 @@ if [ -f $lockfile ]; then
     else
       mm="`date -R`: Lock file looks stale ($dt seconds old). Running an automatic: rm $lockfile"
 		  echo $mm
-		  echo $mm | mail -s "Fingerprints stale lock" $emailTo
+		  # TODO # echo $mm | mail -s "Fingerprints stale lock" $emailTo
 		  rm $lockfile
     fi
 	else
@@ -48,7 +56,7 @@ function truncateTable {
 
 function updateTable {
 	tableName=$1
-	echo "updating $tableName from $mdbf using mdb-export $mdbexv"
+	echo "updating $tableName from $mdbLocal using mdb-export $mdbexv"
 
 	grepv=""
 	if [ $tableName == "CHECKINOUT" ]; then
@@ -56,10 +64,10 @@ function updateTable {
 	fi
 
 	if [ $mdbexv == "0.5" ]; then
-		mdb-export -D "%Y-%m-%d %H:%M:%S" -I -R ";\r\n" $mdbf $tableName | grep "$grepv" | $mysqlCmd
+		mdb-export -D "%Y-%m-%d %H:%M:%S" -I -R ";\r\n" $mdbLocal $tableName | grep "$grepv" | $mysqlCmd
 	else
 		if [ $mdbexv == "0.7.1" ]; then
-			mdb-export -D "%Y-%m-%d %H:%M:%S" -I mysql -R ";\r\n" $mdbf $tableName | grep "$grepv" | $mysqlCmd
+			mdb-export -D "%Y-%m-%d %H:%M:%S" -I mysql -R ";\r\n" $mdbLocal $tableName | grep "$grepv" | $mysqlCmd
 		else
 			echo "mdb-export version $mdbexv unsupported yet"
 			exit
@@ -74,14 +82,14 @@ fi
 
 #sqlf="~/Development/ffa-mfe/databases-api/sql/update_MF_USERS_LOCK.sql"
 
-echo "Copying mdb file to local: $mdbf2 -> $mdbf"
-cpts=$( { \time -f "%e" cp "$mdbf2" $fpetc; } 2>&1 )
+echo "Copying mdb file to local: $mdbRemote -> $mdbLocal"
+cpts=$( { \time -f "%e" cp "$mdbRemote" $workdir; } 2>&1 )
 cpts=`echo $cpts|awk -F. '{print $1}'` # truncate decimal
-#echo rsync -v $mdbf2 $fpetc|bash
+#echo rsync -v $mdbRemote $workdir|bash
 if [ $cpts -gt 60 ]; then
   mm="`date -R`: Copy took $cpts seconds, which is more than 60 seconds... emailing about it"
 	echo $mm
-	echo $mm|mail -s "Fingerprints slow cp" $emailTo 
+	# TODO # echo $mm|mail -s "Fingerprints slow cp" $emailTo 
 fi
 
 truncateTable CHECKINOUT
@@ -91,14 +99,15 @@ updateTable CHECKINOUT
 updateTable USERINFO
 updateTable DEPARTMENTS
 
-echo "updateLocks.php"
-php $instdir/scripts/updateLocks.php true
-date > $df
-
 rm $lockfile
 
-echo "tasklogger"
-curl -s "http://192.168.125.58/taskLogger/taskLogger.php?task=MF_Fingerprint_mirror_update.sh" --connect-timeout 2 > /dev/null
+# TRIGGER webhooks
+# echo "updateLocks.php"
+# instdir="/home/shadi/Development/ffa-zkteco-mfbf"
+# php $instdir/scripts/updateLocks.php true
+# date > $df
+# 
+# echo "tasklogger"
+# curl -s "http://192.168.125.58/taskLogger/taskLogger.php?task=MF_Fingerprint_mirror_update.sh" --connect-timeout 2 > /dev/null
 
-
-echo "done"
+echo "`date -R`: fingerprints-adapter update.sh end"
