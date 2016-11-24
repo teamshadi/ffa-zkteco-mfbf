@@ -1,0 +1,23 @@
+version: '2'
+services:
+  db:
+    image: mysql:8
+    environment:
+    # - MYSQL_ROOT_PASSWORD=my-secret-pw
+    - MYSQL_DATABASE=ffa_price_farm
+    - MYSQL_USER=ffaFingerprints
+    - MYSQL_PASSWORD=abc1234
+    ports:
+    - "3306:3306"
+    volumes:
+    - ./scripts/createTables.sql:/docker-entrypoint-initdb.d/
+
+
+# startup cmd
+# mysql> GRANT ALL PRIVILEGES ON *.* TO 'ffaFingerprints'@'%' IDENTIFIED BY 'abc1234';
+# mysql> flush privileges;
+#
+# login
+# docker-compose exec db 
+# mysql --host pmo.ffaprivatebank.com --port 3306 --user=ffaFingerprints --password=abc1234
+

@@ -8,6 +8,7 @@ source $ROOT/../config.sh
 emailTo="s.akiki@ffaprivatebank.com"
 # emailTo="s.akiki@ffaprivatebank.com M.Moawad@ffaprivatebank.com"
 notiffile="${fpetc}/fingerprints-notif.txt"
+mysqlCmd="mysql --host pmo.ffaprivatebank.com --port 3306 --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm"
 
 # Test mdb-export is installed
 # This would fail if not
@@ -42,7 +43,7 @@ date +%s > $lockfile
 function truncateTable {
 	tableName=$1
 	echo "truncating $tableName"
-	echo "truncate $tableName;"|mysql --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
+	echo "truncate $tableName;"|$mysqlCmd
 }
 
 function updateTable {
@@ -55,10 +56,10 @@ function updateTable {
 	fi
 
 	if [ $mdbexv == "0.5" ]; then
-		mdb-export -D "%Y-%m-%d %H:%M:%S" -I -R ";\r\n" $mdbf $tableName | grep "$grepv" | mysql --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
+		mdb-export -D "%Y-%m-%d %H:%M:%S" -I -R ";\r\n" $mdbf $tableName | grep "$grepv" | $mysqlCmd
 	else
 		if [ $mdbexv == "0.7.1" ]; then
-			mdb-export -D "%Y-%m-%d %H:%M:%S" -I mysql -R ";\r\n" $mdbf $tableName | grep "$grepv" | mysql --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
+			mdb-export -D "%Y-%m-%d %H:%M:%S" -I mysql -R ";\r\n" $mdbf $tableName | grep "$grepv" | $mysqlCmd
 		else
 			echo "mdb-export version $mdbexv unsupported yet"
 			exit
