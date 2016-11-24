@@ -1,0 +1,61 @@
+
+-- who was in the bank during this day
+select 
+distinct USERINFO.Name,CHECKINOUT.CHECKTYPE,CHECKINOUT.CHECKTIME,CHECKINOUT.sn
+from CHECKINOUT
+left join USERINFO on CHECKINOUT.USERID=USERINFO.USERID
+where CHECKTIME>='2014-11-28 00:00:00' and CHECKTIME<'2014-11-29 00:00:00' and USERINFO.Name="HALA KHA"
+;
+
+--
+select id,USERID,CHECKTYPE,CHECKTIME
+from CHECKINOUT
+where
+CHECKTIME>=curdate() and CHECKTIME<now()
+and USERID=(select USERID from USERINFO where Name like "%YASMINA%");
+
+-- list duplicates
+select * from (
+select USERID,Name,count(USERID) as x from USERINFO group by USERID,Name
+) a where x>1;
+
+-- each user's current state in/out of bank based on CHECKTIME timestamp
+truncate MF_USERS_LOCK;
+insert into MF_USERS_LOCK
+select distinct
+USERINFO.Name,
+USERINFO.Name as CardNo,
+#USERINFO.CardNo as mfid,
+case(CHECKINOUT.CHECKTYPE) when 'O' then TRUE else FALSE end as locked
+from CHECKINOUT
+right join (
+	select
+	USERID,max(CHECKTIME) as max_CHECKTIME
+	from CHECKINOUT
+	where CHECKTIME>='2014-11-28 00:00:00' and CHECKTIME<'2014-11-29 00:00:00'
+	group by USERID
+) a on a.USERID=CHECKINOUT.USERID and a.max_CHECKTIME=CHECKINOUT.CHECKTIME
+left join USERINFO on CHECKINOUT.USERID=USERINFO.USERID
+where CHECKTIME>='2014-11-28 00:00:00' and CHECKTIME<'2014-11-29 00:00:00'
+;
+
+
+-- each user's current state in/out of bank based on CHECKTIME but based on last-added row
+insert into MF_USERS_LOCK
+select distinct
+DEPARTMENTS.DEPTNAME,
+USERINFO.CardNo as mfid,
+USERINFO.Name,
+case(CHECKINOUT.CHECKTYPE) when 'O' then TRUE else FALSE end as locked
+from CHECKINOUT
+right join (
+    SELECT max(id) as id,USERID
+    FROM CHECKINOUT
+    WHERE 
+    CHECKTIME>=curdate() and CHECKTIME<now()
+    group by USERID
+) a on a.USERID=CHECKINOUT.USERID and a.id=CHECKINOUT.id
+left join USERINFO on CHECKINOUT.USERID=USERINFO.USERID
+left join DEPARTMENTS on DEPARTMENTS.DEPTID=USERINFO.DEFAULTDEPTID
+where CHECKTIME>=curdate() and CHECKTIME<now()
+;
