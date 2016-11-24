@@ -1,0 +1,13 @@
+FROM ubuntu
+RUN apt-get -qq update > /dev/null \
+ && DEBIAN_FRONTEND=noninteractive \
+    apt-get -qq -y install mdbtools > /dev/null
+
+VOLUME /data
+WORKDIR /code
+COPY . .
+RUN echo "*/2 * * * * cronic2 bash /code/scripts/update.sh" > /etc/cron.d/fingerprints
+
+# https://www.ekito.fr/people/run-a-cron-job-with-docker/
+RUN touch /var/log/cron.log
+CMD cron && tail -f /var/log/cron.log

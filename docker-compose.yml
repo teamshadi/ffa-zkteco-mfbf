@@ -12,6 +12,12 @@ services:
     volumes:
     - ./initZktecoMirror:/docker-entrypoint-initdb.d/
 
+  updater:
+    build:
+      context: .
+      dockerfile: Dockerfile-updater
+    volumes:
+    - /mnt/fingerprints/Program Files/ZKTeco/:/data/ZKTeco
 
 # startup cmd
 # mysql> GRANT ALL PRIVILEGES ON *.* TO 'ffaFingerprints'@'%' IDENTIFIED BY 'fp1298';
