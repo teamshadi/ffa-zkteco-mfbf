@@ -83,7 +83,7 @@ fi
 #sqlf="~/Development/ffa-mfe/databases-api/sql/update_MF_USERS_LOCK.sql"
 
 echo "Copying mdb file to local: $mdbRemote -> $mdbLocal"
-cpts=$( { \time -f "%e" cp "$mdbRemote" $workdir; } 2>&1 )
+cpts=$( { \time -f "%e" cp "$mdbRemote" $workdir; } ) # 2>&1 )
 cpts=`echo $cpts|awk -F. '{print $1}'` # truncate decimal
 #echo rsync -v $mdbRemote $workdir|bash
 if [ $cpts -gt 60 ]; then
@@ -99,6 +99,12 @@ updateTable CHECKINOUT
 updateTable USERINFO
 updateTable DEPARTMENTS
 
+# update MF_USERS_LOCK table
+truncateTable MF_USERS_LOCK
+echo "Updating MF_USERS_LOCK table"
+cat $ROOT/update_MF_USERS_LOCK.sql | $mysqlCmd
+
+# unlock
 rm $lockfile
 
 # TRIGGER webhooks

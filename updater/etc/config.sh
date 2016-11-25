@@ -1,5 +1,6 @@
 # windows share mount ... should match with /etc/fstab
-mdbRemote="/data/ZKTeco/att2000.mdb"
+# mdbRemote="/data/ZKTeco/att2000.mdb"
+mdbRemote="/mnt/fingerprints/Program Files/ZKTeco/att2000.mdb"
 
 # workspace folder
 workdir="/tmp/ffa-zkteco-mfbf"

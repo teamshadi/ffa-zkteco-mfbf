@@ -1,3 +1,11 @@
+# startup cmd
+# mysql> GRANT ALL PRIVILEGES ON *.* TO 'ffaFingerprints'@'%' IDENTIFIED BY 'fp1298';
+# mysql> flush privileges;
+#
+# login
+# docker-compose exec db 
+# mysql --host pmo.ffaprivatebank.com --port 3306 --user=ffaFingerprints --password=fp1298
+
 version: '2'
 services:
   db:
@@ -11,7 +19,7 @@ services:
     ports:
     - "3306:3306"
     volumes:
-    - ./updater/initdb:/docker-entrypoint-initdb.d/
+    - ./initdb:/docker-entrypoint-initdb.d/
 
   updater:
     build:
@@ -22,11 +30,12 @@ services:
     depends_on:
     - db
 
-# startup cmd
-# mysql> GRANT ALL PRIVILEGES ON *.* TO 'ffaFingerprints'@'%' IDENTIFIED BY 'fp1298';
-# mysql> flush privileges;
-#
-# login
-# docker-compose exec db 
-# mysql --host pmo.ffaprivatebank.com --port 3306 --user=ffaFingerprints --password=fp1298
-
+#  processor:
+#    build:
+#      context: processor
+#      dockerfile: Dockerfile
+#    depends_on:
+#    - db
+#    - updater
+#    volumes:
+#    - /etc:/data/odbc # will copy odbc.ini and odbcinst.ini
