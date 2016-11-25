@@ -2,13 +2,16 @@ package main
 
 import (
     "github.com/nats-io/go-nats"
-"time"
+    "time"
+    "os"
+    "fmt"
 )
 
 func main() {
   // url := nats.DefaultURL
   // url := "nats://nats-main:4222"
   url := os.Getenv("NATS_URI")
+  fmt.Printf("Publishing to: %s\n", url)
   nc, _ := nats.Connect(url)
 
   // Make a request

@@ -5,6 +5,8 @@ set -e
 ROOT=`dirname $0` # http://stackoverflow.com/a/59916
 source $ROOT/../etc/config.sh
 
+mkdir -p $workdir
+
 ff=${workdir}/notified_ffamfe_test01_fingerprintsShare.txt
 
 echo "`date -R`: Testing: ${mdbRemote}"

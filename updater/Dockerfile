@@ -7,6 +7,9 @@ RUN apt-get -qq update > /dev/null \
       mdbtools mysql-client bc \
       expect cron man-db time golang \
       > /dev/null
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get -qq -y install \
+    git
 
 # Set a volume that can be mounted from host
 VOLUME /data/ZKTeco
@@ -15,9 +18,13 @@ VOLUME /data/ZKTeco
 WORKDIR /code
 COPY . .
 
+# install for nats
+ENV GOPATH=/code
+RUN go get github.com/nats-io/go-nats
+
 # SET CRON
 RUN touch /var/log/cron.log \
-  && echo "*/2  * * * * root bash /code/bin/update.sh     2>&1 >> /var/log/cron.log" >> /etc/cron.d/fingerprints \
+  && echo "*/1  * * * * root bash /code/bin/update.sh     2>&1 >> /var/log/cron.log" >> /etc/cron.d/fingerprints \
   && echo "*/15 * * * * root bash /code/bin/checkMount.sh 2>&1 >> /var/log/cron.log" >> /etc/cron.d/fingerprints
 # TODO: re-add?
 # 0 */1 * * * root bash /code/bin/remount.sh
@@ -37,15 +44,13 @@ RUN touch /var/log/cron.log \
 ENV TZ=Asia/Beirut
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# install for nats
-ENV GOPATH=/code
-RUN go get github.com/nats-io/go-nats
-
 # SET CMD
 # below sleep is to wait for mysql server
 # https://docs.docker.com/compose/startup-order/
 CMD sleep 5 \
-  && service cron start \
+  && echo "GOPATH=${GOPATH}\n$(cat /etc/cron.d/fingerprints)" > /etc/cron.d/fingerprints \
+  && echo "NATS_URI=${NATS_URI}\n$(cat /etc/cron.d/fingerprints)" > /etc/cron.d/fingerprints \
   && bash /code/bin/checkMount.sh \
   && bash /code/bin/update.sh \
+  && service cron start \
   && tail -f /var/log/cron.log

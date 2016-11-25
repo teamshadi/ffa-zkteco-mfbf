@@ -22,3 +22,5 @@ Please check [importantQueries.txt](importantQueries.txt)
 1. Run the test in `databases-api/tests/test_01_FingerprintsClient.php`
 2. `php tests/*`
 
+# TODO
+* updater: why does cron job not output mysql warnings?

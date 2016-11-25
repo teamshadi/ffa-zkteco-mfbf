@@ -3,6 +3,7 @@
 
 set -e
 ROOT=`dirname $0` # http://stackoverflow.com/a/59916
+echo "Root is ${ROOT}"
 source $ROOT/../etc/config.sh
 
 mkdir -p $workdir
@@ -50,8 +51,12 @@ date +%s > $lockfile
 
 function truncateTable {
 	tableName=$1
+  #echo "mysqlcmd $mysqlCmd"
+	#echo "select top 10 $tableName"
+	#echo "select * from $tableName limit 10;"|$mysqlCmd
 	echo "truncating $tableName"
 	echo "truncate $tableName;"|$mysqlCmd
+
 }
 
 function updateTable {
@@ -83,7 +88,7 @@ fi
 #sqlf="~/Development/ffa-mfe/databases-api/sql/update_MF_USERS_LOCK.sql"
 
 echo "Copying mdb file to local: $mdbRemote -> $mdbLocal"
-cpts=$( { \time -f "%e" cp "$mdbRemote" $workdir; } ) # 2>&1 )
+cpts=$( { \time -f "%e" cp "$mdbRemote" $workdir; } 2>&1 )
 cpts=`echo $cpts|awk -F. '{print $1}'` # truncate decimal
 #echo rsync -v $mdbRemote $workdir|bash
 if [ $cpts -gt 60 ]; then

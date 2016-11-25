@@ -40,16 +40,16 @@ from (
 	    where CHECKTIME>=curdate()
 	    group by USERID
 	) a on a.USERID=CHECKINOUT.USERID and a.id=CHECKINOUT.CHECKTIME -- id / CHECKTIME
-	union -- add absent people ... this is very slow
-	(
-		select USERINFO.USERID,'O' as CHECKTYPE,'1990-01-01' as id
-		from USERINFO
-		where USERINFO.USERID not in (
-			SELECT distinct USERID
-			FROM CHECKINOUT
-			where CHECKTIME>=curdate()
-		)
-	)
+--	union -- add absent people ... this is very slow
+--	(
+--		select USERINFO.USERID,'O' as CHECKTYPE,'1990-01-01' as id
+--		from USERINFO
+--		where USERINFO.USERID not in (
+--			SELECT distinct USERID
+--			FROM CHECKINOUT
+--			where CHECKTIME>=curdate()
+--		)
+--	)
 
 ) CHECKINOUT
 left join USERINFO on CHECKINOUT.USERID=USERINFO.USERID
