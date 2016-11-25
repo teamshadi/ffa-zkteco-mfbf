@@ -24,18 +24,18 @@ services:
     - 8222:8222
     - 6222:6222
 
-  updater:
-    build:
-      context: updater
-      dockerfile: Dockerfile
-    volumes:
-    - /mnt/fingerprints/Program Files/ZKTeco/:/data/ZKTeco
-    depends_on:
-    - db
-    - nats
-    links:
-    - nats
-    env_file: .env
+#  updater:
+#    build:
+#      context: updater
+#      dockerfile: Dockerfile
+#    volumes:
+#    - /mnt/fingerprints/Program Files/ZKTeco/:/data/ZKTeco
+#    depends_on:
+#    - db
+#    - nats
+#    links:
+#    - nats
+#    env_file: .env
 
 #  processor:
 #    build:
