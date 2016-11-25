@@ -1,14 +1,31 @@
 <?php
 
-require_once dirname(__FILE__).'/../config.php';
-require_once dirname(__FILE__).'/../bootstrap.php';
-require_once ROOT_DB_API.'/lib/FfadbClient.php';
-require_once ROOT_DB_API.'/lib/PricefarmClient.php';
-require_once ROOT_DB_API.'/lib/FingerprintsClientInterface.php';
+namespace FfaZktecoMfbf;
 
-class FingerprintsClient extends FfadbClient implements FingerprintsClientInterface {
+class FingerprintsClient {
 
-function connect() {
+static public function getenv() {
+    $env = [
+      'MYSQL_HOST' => false,
+      'MYSQL_PORT' => false,
+      'MYSQL_DATABASE' => false,
+      'MYSQL_USER' => false,
+      'MYSQL_PASSWORD' => false,
+
+      'COPIER_TO_ODBC' => false,
+      'COPIER_TO_DATBASE' => false,
+      'COPIER_TO_USER' => false,
+      'COPIER_TO_PASSWORD' => false
+    ];
+
+    foreach($env as $k=>&$v) {
+      $v = getenv($k);
+    }
+
+    return $env;
+}
+
+function __construct() {
   if(!defined("FP_DB_DBNAME")) throw new Exception("Missing configuration for fingerprints");
   if(!defined("FP_DB_USER")) throw new Exception("Missing configuration for fingerprints");
   if(!defined("FP_DB_PASS")) throw new Exception("Missing configuration for fingerprints");
@@ -70,11 +87,6 @@ function putStates($sts) {
   foreach($secQ as $si) odbc_exec($this->connection,$si);
 }
 
-function putLocks() {
-  $secQ = file_get_contents(__DIR__."/update_MF_USERS_LOCK.sql");
-  odbc_exec($this->connection,"truncate table MF_USERS_LOCK");
-  odbc_exec($this->connection,$secQ);
-}
 
 function copyLocksToMf() {
   // Do the query

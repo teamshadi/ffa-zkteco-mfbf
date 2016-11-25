@@ -3,7 +3,7 @@
 ## Pre
 ```bash
     sudo apt-get update
-    sudo apt-get install php5 php5-dev php-pear libyaml-dev php5-mongo mdbtools 
+    sudo apt-get install php5 php5-dev php-pear libyaml-dev php5-mongo mdbtools unixodbc-dev
     sudo pecl install yaml
 ```
 * if the pecl install above fails, install php 5.6 instead of 5.5.9
