@@ -1,7 +1,7 @@
 mdbf0="/mnt/fingerprints" # windows share mount ... should match with /etc/fstab
-mdbf2="${mdbf0}/path/to/att2000.mdb"
+mdbf2="${mdbf0}/path/to/Access.mdb"
 fpetc="/etc/ffa-mfe" # workspace folder
-mdbf="${fpetc}/att2000.mdb"
+mdbf="${fpetc}/Access.mdb"
 df="${fpetc}/fingerprints-adapter-lastupdate.txt"
 lockfile="${fpetc}/fingerprints-lock.txt"
 

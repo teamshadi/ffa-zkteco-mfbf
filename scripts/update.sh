@@ -50,7 +50,7 @@ function updateTable {
 	echo "updating $tableName from $mdbf using mdb-export $mdbexv"
 
 	grepv=""
-	if [ $tableName == "CHECKINOUT" ]; then
+	if [ $tableName == "acc_monitor_log" ]; then
 		grepv=`date +%Y-%m-%d`
 	fi
 
@@ -86,9 +86,11 @@ fi
 truncateTable CHECKINOUT
 truncateTable USERINFO
 truncateTable DEPARTMENTS
+truncateTable acc_monitor_log
 updateTable CHECKINOUT
 updateTable USERINFO
 updateTable DEPARTMENTS
+updateTable acc_monitor_log
 
 echo "updateLocks.php"
 php $instdir/scripts/updateLocks.php true

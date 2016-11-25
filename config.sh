@@ -1,7 +1,7 @@
 # windows share mount ... should match with /etc/fstab
-mdbf2="/mnt/fingerprints/Program Files/ZKTeco/att2000.mdb"
+mdbf2="C:/ZKTeco/ZKAccess3.5/ZKTeco/Access.mdb"
 fpetc="/home/shadi/.ffa-mfe" # workspace folder
-mdbf="${fpetc}/att2000.mdb"
+mdbf="${fpetc}/Access.mdb"
 df="${fpetc}/fingerprints-adapter-lastupdate.txt"
 lockfile="${fpetc}/fingerprints-lock.txt"
 

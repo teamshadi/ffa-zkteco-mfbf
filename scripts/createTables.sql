@@ -24,6 +24,33 @@ CREATE TABLE CHECKINOUT
         WorkCode                        varchar (48),
         UNIQUE KEY `id` (`id`)
 );
+ CREATE TABLE acc_monitor_log
+ (
+ id int(10) unsigned NOT NULL auto_increment, -- added by Shadi... not in original table from fingerprint peopl
+        id                 int,
+        change_operator          varchar (60),
+        change_time              TIMESTAMP,
+        create_operator          varchar (60),
+        create_time              TIMESTAMP,
+        delete_operator           varchar (60),
+        delete_time               TIMESTAMP,
+        status                    int,
+        log_tag                   int,
+        time                      TIMESTAMP, # For MS SQL, use DATETIME
+        pin                       int,
+        card_no                   int
+        device_id                 int,
+        device_sn                 varchar (40),
+        verified                   int,
+        state                       varchar (2),
+        even_type                   int,
+        description                 varchar (60),
+        event_point_type
+        event_point_id              int,
+        event_point_name            varchar (40),
+       
+        UNIQUE KEY `id` (`id`)
+);
 CREATE TABLE USERINFO
  (
         USERID                  int,

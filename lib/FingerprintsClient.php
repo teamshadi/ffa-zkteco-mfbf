@@ -100,7 +100,7 @@ function copyLocksToMf() {
 
 function getLastCheckinout() {
   // Do the query
-  $secQ = "SELECT max(CHECKTIME) CHECKTIME from CHECKINOUT;";
+  $secQ = "SELECT max(CHECKTIME) CHECKTIME from acc_moitor_log;";
   $secQ = odbc_exec($this->connection,$secQ);
   $secD=array();
   while(($temp = odbc_fetch_array($secQ))) array_push($secD,$temp);
