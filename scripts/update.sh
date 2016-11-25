@@ -42,7 +42,7 @@ date +%s > $lockfile
 function truncateTable {
 	tableName=$1
 	echo "truncating $tableName"
-	echo "truncate $tableName;"|mysql --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
+	echo "truncate $tableName;"|mysql --host pmo.ffaprivatebank.com --port 3306 --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
 }
 
 function updateTable {
@@ -55,10 +55,10 @@ function updateTable {
 	fi
 
 	if [ $mdbexv == "0.5" ]; then
-		mdb-export -D "%Y-%m-%d %H:%M:%S" -I -R ";\r\n" $mdbf $tableName | grep "$grepv" | mysql --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
+		mdb-export -D "%Y-%m-%d %H:%M:%S" -I -R ";\r\n" $mdbf $tableName | grep "$grepv" | mysql --host pmo.ffaprivatebank.com --port 3306 --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
 	else
 		if [ $mdbexv == "0.7.1" ]; then
-			mdb-export -D "%Y-%m-%d %H:%M:%S" -I mysql -R ";\r\n" $mdbf $tableName | grep "$grepv" | mysql --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
+			mdb-export -D "%Y-%m-%d %H:%M:%S" -I mysql -R ";\r\n" $mdbf $tableName | grep "$grepv" | mysql --host pmo.ffaprivatebank.com --port 3306 --user=${mysqlUser} --password=${mysqlPass} ffa_price_farm
 		else
 			echo "mdb-export version $mdbexv unsupported yet"
 			exit
@@ -83,18 +83,17 @@ if [ $cpts -gt 60 ]; then
 	echo $mm|mail -s "Fingerprints slow cp" $emailTo 
 fi
 
-truncateTable CHECKINOUT
+
 truncateTable USERINFO
 truncateTable DEPARTMENTS
 truncateTable acc_monitor_log
-updateTable CHECKINOUT
 updateTable USERINFO
 updateTable DEPARTMENTS
 updateTable acc_monitor_log
 
-echo "updateLocks.php"
-php $instdir/scripts/updateLocks.php true
-date > $df
+#echo "updateLocks.php"
+#php $instdir/scripts/updateLocks.php true
+#date > $df
 
 rm $lockfile
 

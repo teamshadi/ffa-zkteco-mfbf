@@ -10,20 +10,7 @@ CREATE DATABASE IF NOT EXISTS ffa_price_farm;
 
 use ffa_price_farm;
 
-CREATE TABLE CHECKINOUT
- (
- id int(10) unsigned NOT NULL auto_increment, -- added by Shadi... not in original table from fingerprint peopl
-        USERID                  int,
-        CHECKTIME                       TIMESTAMP, # For MS SQL, use DATETIME
-        CHECKTYPE                       varchar (2),
-        VERIFYCODE                      int,
-        SENSORID                        varchar (10),
-        Memoinfo                        varchar (60),
-        sn                      varchar (40),
-        UserExtFmt                      int,
-        WorkCode                        varchar (48),
-        UNIQUE KEY `id` (`id`)
-);
+
  CREATE TABLE acc_monitor_log
  (
  id int(10) unsigned NOT NULL auto_increment, -- added by Shadi... not in original table from fingerprint peopl
