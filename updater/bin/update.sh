@@ -107,6 +107,9 @@ cat $ROOT/update_MF_USERS_LOCK.sql | $mysqlCmd
 # unlock
 rm $lockfile
 
+# publish even to nats server
+go run $ROOT/publish.go
+
 # TRIGGER webhooks
 # echo "updateLocks.php"
 # instdir="/home/shadi/Development/ffa-zkteco-mfbf"

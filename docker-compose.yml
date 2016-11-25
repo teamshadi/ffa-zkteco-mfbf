@@ -10,16 +10,19 @@ version: '2'
 services:
   db:
     image: mysql:8
-    environment:
-    - MYSQL_ROOT_PASSWORD=my-secret-pw
-    # variables below are also set in updater/Dockerfile
-    - MYSQL_DATABASE=ffa_price_farm
-    - MYSQL_USER=ffaFingerprints
-    - MYSQL_PASSWORD=fp1298
+    env_file: .env
     ports:
     - "3306:3306"
     volumes:
     - ./initdb:/docker-entrypoint-initdb.d/
+
+  nats:
+    # https://hub.docker.com/_/nats/
+    image: nats
+    ports:
+    - 4222:4222
+    - 8222:8222
+    - 6222:6222
 
   updater:
     build:
@@ -29,6 +32,10 @@ services:
     - /mnt/fingerprints/Program Files/ZKTeco/:/data/ZKTeco
     depends_on:
     - db
+    - nats
+    links:
+    - nats
+    env_file: .env
 
 #  processor:
 #    build:
@@ -39,3 +46,18 @@ services:
 #    - updater
 #    volumes:
 #    - /etc:/data/odbc # will copy odbc.ini and odbcinst.ini
+
+#  copier:
+#    image: shadi/odbc-copier
+#    environment:
+#    - COPIER_FROM_HOST=db
+#    - COPIER_FROM_PORT=3306
+#    - COPIER_FROM_DATBASE=ffa_price_farm
+#    - COPIER_FROM_USER=ffaFingerprints
+#    - COPIER_FROM_PASSWORD=fp1298
+#
+#    - COPIER_TO_ODBC=MarketflowAcc
+#    - COPIER_TO_DATBASE=ffa_price_farm
+#    - COPIER_TO_USER=ffaFingerprints
+#    - COPIER_TO_PASSWORD=fp1298
+#

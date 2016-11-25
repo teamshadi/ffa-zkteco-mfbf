@@ -3,11 +3,10 @@ FROM ubuntu
 # PREPARE with APT
 RUN apt-get -qq update > /dev/null \
  && DEBIAN_FRONTEND=noninteractive \
-    apt-get -qq -y install mdbtools mysql-client bc > /dev/null
-RUN apt-get -qq -y install expect > /dev/null
-RUN apt-get -qq -y install cron > /dev/null
-RUN apt-get -qq -y install man-db > /dev/null
-RUN apt-get -qq -y install time > /dev/null
+    apt-get -qq -y install \
+      mdbtools mysql-client bc \
+      expect cron man-db time golang \
+      > /dev/null
 
 # Set a volume that can be mounted from host
 VOLUME /data/ZKTeco
@@ -38,10 +37,14 @@ RUN touch /var/log/cron.log \
 ENV TZ=Asia/Beirut
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# install for nats
+ENV GOPATH=/code
+RUN go get github.com/nats-io/go-nats
+
 # SET CMD
 # below sleep is to wait for mysql server
 # https://docs.docker.com/compose/startup-order/
-CMD sleep 10 \
+CMD sleep 5 \
   && service cron start \
   && bash /code/bin/checkMount.sh \
   && bash /code/bin/update.sh \
