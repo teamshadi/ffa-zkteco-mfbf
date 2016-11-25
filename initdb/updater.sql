@@ -116,3 +116,30 @@ CREATE TABLE DEPARTMENTS
         OverTime                        int
 );
 
+
+CREATE TABLE `acc_monitor_log`
+ (
+  `id`      int,
+  `change_operator`     varchar (100),
+  `change_time`     datetime,
+  `create_operator`     varchar (100),
+  `create_time`     datetime,
+  `delete_operator`     varchar (100),
+  `delete_time`     datetime,
+  `status`      int,
+  `log_tag`     int,
+  `time`      datetime,
+  `pin`     varchar (100),
+  `card_no`     varchar (100),
+  `device_id`     int,
+  `device_sn`     varchar (100),
+  `device_name`     varchar (100),
+  `verified`      int,
+  `state`     int,
+  `event_type`      int,
+  `description`     varchar (400),
+  `event_point_type`      int,
+  `event_point_id`      int,
+  `event_point_name`      varchar (100)
+);
+
