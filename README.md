@@ -4,7 +4,7 @@ This is a server-side program that links the fingerprints machine database in FF
 It is divided into 2 main workers:
 1. [updater](updater):
  * copies the ZKTeco database (access mdb file) from a laptop to the local machine
- * imports copied access file to server database (MySql)
+ * imports copied access file to server database (MySql) using [mdbtools](https://github.com/brianb/mdbtools)
  * does so every 2 mins
  * triggers the processor worker (below)
 2. [processor](processor):
