@@ -2,28 +2,51 @@
 # This is tailored for mdb-export 0.5.0
 
 set -e
-ROOT=`dirname $0` # http://stackoverflow.com/a/59916
-echo "Root is ${ROOT}"
-source $ROOT/../etc/config.sh
 
+# http://stackoverflow.com/a/59916
+ROOT=`dirname $0` 
+# echo "Root is ${ROOT}"
+
+# check remote mdb file
+if [ ! -f $UPDATER_REMOTEMDB ]; then
+  echo "Remote mdb file does not exist. Aborting: " $UPDATER_REMOTEMDB
+  exit 1
+fi
+
+# check env vars
+# http://stackoverflow.com/a/8880633/4126114
+# http://stackoverflow.com/a/1921337/4126114
+declare -a arr=("UPDATER_MYSQLHOST" "MYSQL_DATABASE" "MYSQL_USER" "MYSQL_PASSWORD" "UPDATER_NATSURI" "UPDATER_REMOTEMDB")
+for i in "${arr[@]}"
+do
+  if [ -z "${!i}" ]; then
+    echo "Please define env var $i"
+    exit 1
+  fi
+done
+
+#
+workdir=/tmp/ffa-zkteco-mfbf
 mkdir -p $workdir
+
+# install MDBtoMysql if not there
+if [ ! -d $workdir/MDBtoMySQL ]; then
+  git clone https://github.com/shadiakiki1986/MDBtoMySQL $workdir/MDBtoMySQL
+else
+  cd $workdir/MDBtoMySQL && git pull && cd -
+fi
 
 # base filename
 # http://stackoverflow.com/a/2664746/4126114
-mdbLocal="${workdir}/${mdbRemote##*/}"
-df="${workdir}/lastupdate.txt"
+mdbLocal="${workdir}/${UPDATER_REMOTEMDB##*/}"
+lastupdate="${workdir}/lastupdate.txt"
 lockfile="${workdir}/lock.txt"
 
-emailTo="s.akiki@ffaprivatebank.com"
+# emailTo="s.akiki@ffaprivatebank.com"
 # emailTo="s.akiki@ffaprivatebank.com M.Moawad@ffaprivatebank.com"
 notiffile="${workdir}/fingerprints-notif.txt"
 
-
-# Test mdb-export is installed
-# This would fail if not
-# http://stackoverflow.com/a/677212
-hash mdb-export 
-
+# lockfile management
 if [ -f $lockfile ]; then
 	echo "`date -R`: Fingerprints update already in progress..."
 
@@ -40,7 +63,7 @@ if [ -f $lockfile ]; then
 		  rm $lockfile
     fi
 	else
-		echo "`date -R`: lock file exists but is not stale ($dt secs old) ... aborting"
+		echo "`date -R`: lock file exists but is not stale ($dt secs old) ... aborting: " $lockfile
 		exit
 	fi
 else
@@ -49,68 +72,48 @@ fi
 
 date +%s > $lockfile
 
-function truncateTable {
-	tableName=$1
-  #echo "mysqlcmd $mysqlCmd"
-	#echo "select top 10 $tableName"
-	#echo "select * from $tableName limit 10;"|$mysqlCmd
-	echo "truncating $tableName"
-	echo "truncate $tableName;"|$mysqlCmd
-
-}
-
-function updateTable {
-	tableName=$1
-	echo "updating $tableName from $mdbLocal using mdb-export $mdbexv"
-
-	grepv=""
-	if [ $tableName == "CHECKINOUT" ]; then
-		grepv=`date +%Y-%m-%d`
-	fi
-
-	if [ $mdbexv == "0.5" ]; then
-		mdb-export -D "%Y-%m-%d %H:%M:%S" -I -R ";\r\n" $mdbLocal $tableName | grep "$grepv" | $mysqlCmd
-	else
-		if [ $mdbexv == "0.7.1" ]; then
-			mdb-export -D "%Y-%m-%d %H:%M:%S" -I mysql -R ";\r\n" $mdbLocal $tableName | grep "$grepv" | $mysqlCmd
-		else
-			echo "mdb-export version $mdbexv unsupported yet"
-			exit
-		fi
-	fi
-}
-
-mdbexv=`man mdb-export|tail -n 1|awk '{print $1}'`
-if [ $mdbexv == "MDBTools" ]; then
-	mdbexv=`man mdb-export|tail -n 1|awk '{print $2}'`;
-fi
-
-#sqlf="~/Development/ffa-mfe/databases-api/sql/update_MF_USERS_LOCK.sql"
-
-echo "Copying mdb file to local: $mdbRemote -> $mdbLocal"
-cpts=$( { \time -f "%e" cp "$mdbRemote" $workdir; } 2>&1 )
+#
+echo "Copying mdb file to local: $UPDATER_REMOTEMDB -> $mdbLocal"
+cpts=$( { \time -f "%e" cp "$UPDATER_REMOTEMDB" $workdir; } 2>&1 )
 cpts=`echo $cpts|awk -F. '{print $1}'` # truncate decimal
-#echo rsync -v $mdbRemote $workdir|bash
+
+# Calculate copy time and alert if too slow
+#echo rsync -v $UPDATER_REMOTEMDB $workdir|bash
 if [ $cpts -gt 60 ]; then
   mm="`date -R`: Copy took $cpts seconds, which is more than 60 seconds... emailing about it"
 	echo $mm
 	# TODO # echo $mm|mail -s "Fingerprints slow cp" $emailTo 
 fi
 
-truncateTable CHECKINOUT
-truncateTable USERINFO
-truncateTable DEPARTMENTS
-updateTable CHECKINOUT
-updateTable USERINFO
-updateTable DEPARTMENTS
+# perform sync
+# Tables needed are: acc_monitor_log USERINFO DEPARTMENTS
+bash $workdir/MDBtoMySQL/MDBtoMySQL.sh \
+  -m "$mdbLocal" \
+  -d "$MYSQL_DATABASE" \
+  -u "$MYSQL_USER" \
+  -p "$MYSQL_PASSWORD" \
+  -h "$UPDATER_MYSQLHOST" \
+  -g acc_monitor_log
 
-# update MF_USERS_LOCK table
-truncateTable MF_USERS_LOCK
+#
 echo "Updating MF_USERS_LOCK table"
+mysqlCmd="/usr/bin/mysql \
+  --host=$UPDATER_MYSQLHOST \
+  --user=$MYSQL_USER \
+  --password=$MYSQL_PASSWORD \
+  $MYSQL_DATABASE"
+# --silent 
+#  --port=3306
+# TODO
+# try to use mysql_config_editor in the dockerfile
+# to avoid the warning about inline password in mysql call above
+#mysqlCmd="mysql --login-path=myhostalias ffa_price_farm --silent"
+$mysqlCmd -e "truncate MF_USERS_LOCK;"
 cat $ROOT/update_MF_USERS_LOCK.sql | $mysqlCmd
 
 # unlock
 rm $lockfile
+date > $lastupdate
 
 # publish even to nats server
 go run $ROOT/publish.go
@@ -119,7 +122,6 @@ go run $ROOT/publish.go
 # echo "updateLocks.php"
 # instdir="/home/shadi/Development/ffa-zkteco-mfbf"
 # php $instdir/scripts/updateLocks.php true
-# date > $df
 # 
 # echo "tasklogger"
 # curl -s "http://192.168.125.58/taskLogger/taskLogger.php?task=MF_Fingerprint_mirror_update.sh" --connect-timeout 2 > /dev/null

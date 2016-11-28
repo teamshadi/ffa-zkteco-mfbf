@@ -20,7 +20,7 @@ class PdoFactoryTest extends \PHPUnit_Framework_TestCase {
 
   public function testMysql() {
     self::$pdoh->connectMysql(
-      self::$env['MYSQL_HOST'].':'.self::$env['MYSQL_PORT'],
+      self::$env['UPDATER_MYSQLHOST'].':3306',
       self::$env['MYSQL_DATABASE'],
       self::$env['MYSQL_USER'],
       self::$env['MYSQL_PASSWORD']

@@ -18,16 +18,11 @@ VOLUME /data/ZKTeco
 WORKDIR /code
 COPY . .
 
-# install for nats
+RUN touch /var/log/cron.log
+
+# install
 ENV GOPATH=/code
 RUN go get github.com/nats-io/go-nats
-
-# SET CRON
-RUN touch /var/log/cron.log \
-  && echo "*/1  * * * * root bash /code/bin/update.sh     2>&1 >> /var/log/cron.log" >> /etc/cron.d/fingerprints \
-  && echo "*/15 * * * * root bash /code/bin/checkMount.sh 2>&1 >> /var/log/cron.log" >> /etc/cron.d/fingerprints
-# TODO: re-add?
-# 0 */1 * * * root bash /code/bin/remount.sh
 
 # CONFIGURE MYSQL PASSWORD
 # TODO, use mysql_config_editor to avoid the warnings of "password is not safe to pass in mysql CLI call"
@@ -45,12 +40,4 @@ ENV TZ=Asia/Beirut
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # SET CMD
-# below sleep is to wait for mysql server
-# https://docs.docker.com/compose/startup-order/
-CMD sleep 5 \
-  && echo "GOPATH=${GOPATH}\n$(cat /etc/cron.d/fingerprints)" > /etc/cron.d/fingerprints \
-  && echo "NATS_URI=${NATS_URI}\n$(cat /etc/cron.d/fingerprints)" > /etc/cron.d/fingerprints \
-  && bash /code/bin/checkMount.sh \
-  && bash /code/bin/update.sh \
-  && service cron start \
-  && tail -f /var/log/cron.log
+CMD init.sh

@@ -10,7 +10,7 @@ import (
 func main() {
   // url := nats.DefaultURL
   // url := "nats://nats-main:4222"
-  url := os.Getenv("NATS_URI")
+  url := os.Getenv("UPDATER_NATSURI")
   fmt.Printf("Publishing to: %s\n", url)
   nc, _ := nats.Connect(url)
 

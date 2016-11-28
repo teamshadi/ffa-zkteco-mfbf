@@ -6,8 +6,7 @@ class FingerprintsClient {
 
 static public function getenv() {
     $env = [
-      'MYSQL_HOST' => false,
-      'MYSQL_PORT' => false,
+      'UPDATER_MYSQLHOST' => false,
       'MYSQL_DATABASE' => false,
       'MYSQL_USER' => false,
       'MYSQL_PASSWORD' => false,
