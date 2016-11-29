@@ -1,18 +1,23 @@
 FROM shadiakiki1986/php7-apache-odbc-and-other
 MAINTAINER Shadi Akiki
 
+# PREPARE with APT
+RUN apt-get -qq update > /dev/null \
+ && DEBIAN_FRONTEND=noninteractive \
+    apt-get -qq -y install \
+      php-mysql php-sqlite3 \
+      > /dev/null
+
 VOLUME /data/odbc
-COPY /data/odbc/odbc.ini /etc/
-COPY /data/odbc/odbcinst.ini /etc/
 
 # Continue
 WORKDIR /code
 COPY . .
 RUN composer install --quiet
-
-# assert config availability
-RUN test -f etc/config.yml && \
-    test -d etc/ssl
+RUN ln -s /code/www/api.php /var/www/html/api.php
 
 # LAUNCH
-CMD php bin/natsListener.php
+CMD cp /data/odbc/odbc.ini /etc/ \
+  && cp /data/odbc/odbcinst.ini /etc/ \
+  && service apache2 start \
+  && php bin/natsListener.php
