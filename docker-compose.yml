@@ -38,17 +38,16 @@ services:
     env_file: .env
 
 #  processor:
+
+#  copier:
 #    build:
-#      context: processor
+#      context: copier
 #      dockerfile: Dockerfile
+#
 #    depends_on:
 #    - db
 #    - updater
-#    volumes:
-#    - /etc:/data/odbc # will copy odbc.ini and odbcinst.ini
-
-#  copier:
-#    image: shadi/odbc-copier
+#
 #    environment:
 #    - COPIER_FROM_HOST=db
 #    - COPIER_FROM_PORT=3306
@@ -61,3 +60,6 @@ services:
 #    - COPIER_TO_USER=ffaFingerprints
 #    - COPIER_TO_PASSWORD=fp1298
 #
+#    volumes:
+#    - /etc:/data/odbc # will copy odbc.ini and odbcinst.ini
+

@@ -1,10 +1,8 @@
 <?php
 
-require_once dirname(__FILE__).'/../config.php';
-require_once dirname(__FILE__).'/../bootstrap.php';
-require_once ROOT_DB_API."/lib/FingerprintsClient.php";
+namespace FfaZktecoMfbf;
 
-class FingerprintsClientTest extends PHPUnit_Framework_TestCase {
+class CopierTest extends \PHPUnit_Framework_TestCase {
 
   /*
    * Disabling this test because it modifies the data in the database
