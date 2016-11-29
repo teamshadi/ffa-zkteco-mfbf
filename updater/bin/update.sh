@@ -16,7 +16,7 @@ fi
 # check env vars
 # http://stackoverflow.com/a/8880633/4126114
 # http://stackoverflow.com/a/1921337/4126114
-declare -a arr=("UPDATER_MYSQLHOST" "MYSQL_DATABASE" "MYSQL_USER" "MYSQL_PASSWORD" "UPDATER_NATSURI" "UPDATER_REMOTEMDB")
+declare -a arr=("UPDATER_MYSQLHOST" "MYSQL_DATABASE" "MYSQL_USER" "MYSQL_PASSWORD" "UPDATER_NATSURI" "UPDATER_REMOTEMDB" "UPDATER_WORKDIR")
 for i in "${arr[@]}"
 do
   if [ -z "${!i}" ]; then
@@ -26,25 +26,17 @@ do
 done
 
 #
-workdir=/tmp/ffa-zkteco-mfbf
-mkdir -p $workdir
-
-# install MDBtoMysql if not there
-if [ ! -d $workdir/MDBtoMySQL ]; then
-  git clone https://github.com/shadiakiki1986/MDBtoMySQL $workdir/MDBtoMySQL
-else
-  cd $workdir/MDBtoMySQL && git pull && cd -
-fi
+mkdir -p $UPDATER_WORKDIR
 
 # base filename
 # http://stackoverflow.com/a/2664746/4126114
-mdbLocal="${workdir}/${UPDATER_REMOTEMDB##*/}"
-lastupdate="${workdir}/lastupdate.txt"
-lockfile="${workdir}/lock.txt"
+mdbLocal="${UPDATER_WORKDIR}/${UPDATER_REMOTEMDB##*/}"
+lastupdate="${UPDATER_WORKDIR}/lastupdate.txt"
+lockfile="${UPDATER_WORKDIR}/lock.txt"
 
 # emailTo="s.akiki@ffaprivatebank.com"
 # emailTo="s.akiki@ffaprivatebank.com M.Moawad@ffaprivatebank.com"
-notiffile="${workdir}/fingerprints-notif.txt"
+notiffile="${UPDATER_WORKDIR}/fingerprints-notif.txt"
 
 # lockfile management
 if [ -f $lockfile ]; then
@@ -74,11 +66,11 @@ date +%s > $lockfile
 
 #
 echo "Copying mdb file to local: $UPDATER_REMOTEMDB -> $mdbLocal"
-cpts=$( { \time -f "%e" cp "$UPDATER_REMOTEMDB" $workdir; } 2>&1 )
+cpts=$( { \time -f "%e" cp "$UPDATER_REMOTEMDB" $UPDATER_WORKDIR; } 2>&1 )
 cpts=`echo $cpts|awk -F. '{print $1}'` # truncate decimal
 
 # Calculate copy time and alert if too slow
-#echo rsync -v $UPDATER_REMOTEMDB $workdir|bash
+#echo rsync -v $UPDATER_REMOTEMDB $UPDATER_WORKDIR|bash
 if [ $cpts -gt 60 ]; then
   mm="`date -R`: Copy took $cpts seconds, which is more than 60 seconds... emailing about it"
 	echo $mm
@@ -87,7 +79,7 @@ fi
 
 # perform sync
 # Tables needed are: acc_monitor_log USERINFO DEPARTMENTS
-bash $workdir/MDBtoMySQL/MDBtoMySQL.sh \
+bash $UPDATER_WORKDIR/MDBtoMySQL/MDBtoMySQL.sh \
   -m "$mdbLocal" \
   -d "$MYSQL_DATABASE" \
   -u "$MYSQL_USER" \

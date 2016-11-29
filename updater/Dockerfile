@@ -11,6 +11,12 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get -qq -y install \
     git
 
+# install MDBtoMysql if not there
+ENV UPDATER_WORKDIR /tmp/ffa-zkteco-mfbf
+VOLUME $UPDATER_WORKDIR
+WORKDIR $UPDATER_WORKDIR
+RUN git clone https://github.com/shadiakiki1986/MDBtoMySQL
+
 # Set a volume that can be mounted from host
 VOLUME /data/ZKTeco
 
@@ -40,4 +46,4 @@ ENV TZ=Asia/Beirut
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # SET CMD
-CMD init.sh
+CMD bin/init.sh
