@@ -42,7 +42,7 @@ from (
 	) a on a.pin=acc_monitor_log.pin and a.id=acc_monitor_log.time -- id / CHECKTIME
 	union -- add absent people ... this is very slow
 	(
-		select USERINFO.USERI --D,'1' as state,'1990-01-01' as id
+		select USERINFO.USERID --D,'1' as state,'1990-01-01' as id
 		from USERINFO
 		where USERINFO.USERID not in (
 			SELECT distinct pin
