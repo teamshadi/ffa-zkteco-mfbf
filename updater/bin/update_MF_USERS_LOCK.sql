@@ -3,10 +3,13 @@ insert into MF_USERS_LOCK
 select distinct
 USERINFO.USERID,
 DEPARTMENTS.DEPTNAME,
+
+-- below mfid/bfid variables also used in copier/src/Odbc#set()
 USERINFO.MINZU as mfid_lb,
 USERINFO.TITLE as bfid_lb,
 USERINFO.SSN as mfid_db,
 USERINFO.OPHONE as bfid_db,
+
 USERINFO.Name,
 case(MF_USERS_STATE.state)
 	when 'lock' then TRUE

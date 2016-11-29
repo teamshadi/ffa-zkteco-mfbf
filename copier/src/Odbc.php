@@ -18,9 +18,17 @@ class Odbc {
   }
 
   // secD: output from Locks->raw
-  public function set(int $db, array $secD) {
-    $mfid=$this->env['COPIER_TO_'.$db.'_FIELD_MF'];
-    $bfid=$this->env['COPIER_TO_'.$db.'_FIELD_BF'];
+  public function set(int $i, array $secD) {
+
+    // set suffix based on configuration in .env file
+    $db='lb';
+    if($i==2 || $i==4) {
+      $db='db';
+    }
+
+    // variable name in sync with updater/bin/update_MF_USERS_LOCK.sql
+    $mfid='mfid_'.$db;
+    $bfid='bfid_'.$db;
 
     $this->dbh->exec("truncate table MF_USERS_LOCK");
 

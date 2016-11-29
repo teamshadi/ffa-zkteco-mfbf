@@ -11,6 +11,8 @@ services:
   db:
     image: mysql:8
     env_file: .env
+    environment:
+    - MYSQL_PASSWORD=$MYSQL_PASSWORD
     ports:
     - "3306:3306"
     volumes:
@@ -37,29 +39,19 @@ services:
     - nats
     env_file: .env
 
-#  processor:
-
-#  copier:
-#    build:
-#      context: copier
-#      dockerfile: Dockerfile
-#
-#    depends_on:
-#    - db
-#    - updater
-#
-#    environment:
-#    - COPIER_FROM_HOST=db
-#    - COPIER_FROM_PORT=3306
-#    - COPIER_FROM_DATBASE=ffa_price_farm
-#    - COPIER_FROM_USER=ffaFingerprints
-#    - COPIER_FROM_PASSWORD=fp1298
-#
-#    - COPIER_TO_ODBC=MarketflowAcc
-#    - COPIER_TO_DATBASE=ffa_price_farm
-#    - COPIER_TO_USER=ffaFingerprints
-#    - COPIER_TO_PASSWORD=fp1298
-#
-#    volumes:
-#    - /etc:/data/odbc # will copy odbc.ini and odbcinst.ini
+  copier:
+    build:
+      context: copier
+      dockerfile: Dockerfile
+    depends_on:
+    - db
+    - updater
+    env_file: .env
+    environment:
+    - COPIER_TO_1_PASSWORD=$COPIER_TO_1_PASSWORD
+    - COPIER_TO_2_PASSWORD=$COPIER_TO_2_PASSWORD
+    - COPIER_TO_3_PASSWORD=$COPIER_TO_3_PASSWORD
+    - COPIER_TO_4_PASSWORD=$COPIER_TO_4_PASSWORD
+    volumes:
+    - ./etc:/data/odbc # will copy odbc.ini and odbcinst.ini
 

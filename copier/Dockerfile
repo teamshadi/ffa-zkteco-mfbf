@@ -15,4 +15,4 @@ RUN test -f etc/config.yml && \
     test -d etc/ssl
 
 # LAUNCH
-ENTRYPOINT ["bash","entrypoint.sh"]
+CMD php bin/natsListener.php

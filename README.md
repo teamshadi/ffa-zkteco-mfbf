@@ -13,7 +13,16 @@ It is divided into 2 main workers:
  * triggers a user-defined web-hook
 
 # Usage
-`docker-compose up --build --abort-on-container-exit`
+1. Copy odbc.ini and odbcinst.ini to root folder
+2.
+```
+docker-compose up --build --abort-on-container-exit \
+  --env MYSQL_PASSWORD=something \
+  --env COPIER_TO_1_PASSWORD=something \
+  --env COPIER_TO_2_PASSWORD=something \
+  --env COPIER_TO_3_PASSWORD=something \
+  --env COPIER_TO_4_PASSWORD=something
+```
 
 # Important SQL queries
 Please check [importantQueries.txt](importantQueries.txt)

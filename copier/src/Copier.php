@@ -28,15 +28,11 @@ class Copier {
       'COPIER_TO_1_DATABASE' => false,
       'COPIER_TO_1_USER' => false,
       'COPIER_TO_1_PASSWORD' => false,
-      'COPIER_TO_1_FIELD_MF' => false,
-      'COPIER_TO_1_FIELD_BF' => false,
 
       'COPIER_TO_2_ODBC' => false,
       'COPIER_TO_2_DATABASE' => false,
       'COPIER_TO_2_USER' => false,
-      'COPIER_TO_2_PASSWORD' => false,
-      'COPIER_TO_2_FIELD_MF' => false,
-      'COPIER_TO_2_FIELD_BF' => false
+      'COPIER_TO_2_PASSWORD' => false
     ];
 
     foreach($env as $k=>&$v) {
@@ -50,6 +46,8 @@ class Copier {
     $secD = $this->locks->raw();
     $this->odbc->set(1,$secD);
     $this->odbc->set(2,$secD);
+    $this->odbc->set(3,$secD);
+    $this->odbc->set(4,$secD);
   }
 
 }
