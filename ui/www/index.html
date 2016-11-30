@@ -1,0 +1,46 @@
+<!doctype html>
+<html ng-app>
+<head>
+ 	<title>Fingerprints adapter</title>
+        <script src="js/vendor/jquery-2.1.1.min.js"></script>
+        <script src="js/vendor/angular-1.2.28.min.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/Controller1.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/index.css" />
+</head>
+<body>
+<div ng-controller="Controller1">
+	<b><i>Fingerprints adapter</i></b> &nbsp; 
+	<span ng-show="!putUserAllStatus"><button ng-click="putUserAll()" class="butred" ng-disabled="!dataEdited()">Save</button></span>
+	<span ng-show=" putUserAllStatus">Saving...</span>
+	<button ng-click="setAll('lock')" ng-disabled="putUserAllStatus">Lock all</button>
+	<button ng-click="setAll('unlock')" ng-disabled="putUserAllStatus">Unlock all</button>
+	<button ng-click="setAll('auto')" ng-disabled="putUserAllStatus">Auto all</button>
+	&nbsp;
+	<br>
+	<span><i>Last updated: {{lastUpdate.lastUpdate}}</i></span>&nbsp;
+	<br>
+	<span><i>Last check in/out: {{lastUpdate.lastcheckinout}}</i></span>&nbsp;
+	<br>
+	<small>(autorefreshes every {{UPDATE_INTERVAL/60/1000}}')</small>
+	<br>
+	<table border=0 id="mytable">
+	<tr>	<th>Dep</th><th>Name</th><th>State</th><th>Locked</th><th>In bldg</th>
+		<th>MF LB</th><th>BF LB</th><th>MF DB</th><th>BF DB</th>
+	</tr>
+	<tr ng-show="noData()"><td colspan=4 align="center">None</td></tr>
+	<tr ng-repeat="rd in data" class="locked_{{rd.state}}_{{rd.Locked}}">
+		<td>{{rd.DEPTNAME}}</td>
+		<td>{{rd.Name}}</td>
+		<td><select ng-model="rd.state"><option ng-repeat="si in states" ng-value="si">{{si}}</option></select></td>
+		<td><span ng-switch on="rd.Locked"><span ng-switch-when="1">Yes</span><span ng-switch-default>No</span></span></td>
+		<td><span ng-switch on="rd.inBldg"><span ng-switch-when="1">Yes</span><span ng-switch-default>No</span></span></td>
+		<td>{{rd.mfid_lb}}</td><td>{{rd.bfid_lb}}</td>
+		<td>{{rd.mfid_db}}</td><td>{{rd.bfid_db}}</td>
+	</tr>
+	</table>
+</div><!-- end Controller1 -->
+
+</body>
+</html>

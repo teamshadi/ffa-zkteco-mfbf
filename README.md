@@ -1,7 +1,7 @@
 # fingerprints-adapter
 This is a server-side program that links the ZKTeco fingerprints machine database in FFA to Marketflow/Bankflow to log out users who are not in the building (and not let them log in).
 
-It is divided into 2 main workers:
+It is divided into the following parts:
 1. [updater](updater):
  * runs every 2 mins
  * copies the ZKTeco database (access mdb file) from a laptop to the local machine
@@ -11,6 +11,9 @@ It is divided into 2 main workers:
 2. [copier](copier):
  * copies lock/unlock table from local database (MySql) to a foreign database (SQL Server)
  * triggers a user-defined web-hook
+3. [ui](ui):
+ * user web interface served at port 80
+ * javascript+angular
 
 # Usage
 1. Create on target MF/BF databases

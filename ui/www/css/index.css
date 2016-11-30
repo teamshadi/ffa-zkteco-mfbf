@@ -1,0 +1,7 @@
+button.butred:enabled { background-color:#FF6666; }
+.locked_auto_1 { background-color: lightpink; }
+.locked_auto_0 { background-color: lightgreen; }
+.locked_lock_1 { background-color: red; }
+.locked_lock_0 { background-color: green; }
+.locked_unlock_1 { background-color: red; }
+.locked_unlock_0 { background-color: green; }

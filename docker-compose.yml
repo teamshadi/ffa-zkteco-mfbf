@@ -51,3 +51,12 @@ services:
     - ./etc:/data/odbc # will copy odbc.ini and odbcinst.ini
     volumes_from:
     - updater:ro
+
+  ui:
+    image: nginx:alpine
+    depends_on:
+    - copier
+    volumes:
+    - ./ui/www:/var/www/html
+    ports:
+    - "80:80"
