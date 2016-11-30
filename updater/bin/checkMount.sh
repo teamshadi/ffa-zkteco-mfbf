@@ -3,28 +3,29 @@
 
 set -e
 ROOT=`dirname $0` # http://stackoverflow.com/a/59916
-source $ROOT/../etc/config.sh
 
-mkdir -p $workdir
+source $ROOT/checkEnv.sh
 
-ff=${workdir}/notified_ffamfe_test01_fingerprintsShare.txt
+mkdir -p $UPDATER_WORKDIR
 
-echo "`date -R`: Testing: ${mdbRemote}"
+ff=${UPDATER_WORKDIR}/notified_ffamfe_test01_fingerprintsShare.txt
+
+echo "`date -R`: Testing: ${UPDATER_REMOTEMDB}"
 if [ -f $ff ]; then
   # if already notified, check if exists now and fix
-	if [ -f "$mdbRemote" ]; then
+	if [ -f "$UPDATER_REMOTEMDB" ]; then
 		rm $ff;
-    mm="`date -R`: Fingerprints shared folder $mdbRemote found now.\nRunning rm $ff on your behalf."
+    mm="`date -R`: Fingerprints shared folder $UPDATER_REMOTEMDB found now.\nRunning rm $ff on your behalf."
     echo $mm
 		#echo -e $mm | mail -s "FFA-MFE test 01 passed" s.akiki@ffaprivatebank.com M.Moawad@ffaprivatebank.com;
 	fi
-elif [ -f "$mdbRemote" ]; then
+elif [ -f "$UPDATER_REMOTEMDB" ]; then
   # if not notified, and if exists
   echo "`date -R`: Found mount. Doing nothing"
 else
   # if not notified and if not exists
 	touch $ff;
-  mm="`date -R`: Fingerprints shared folder $mdbRemote not found.\nPlease run rm $ff when fixed."
+  mm="`date -R`: Fingerprints shared folder $UPDATER_REMOTEMDB not found.\nPlease run rm $ff when fixed."
   echo $mm
 	#echo -e $mm | mail -s "FFA-MFE test 01 failed" s.akiki@ffaprivatebank.com M.Moawad@ffaprivatebank.com;
 fi

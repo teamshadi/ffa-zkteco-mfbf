@@ -6,6 +6,7 @@ class DbhWrapperFactory {
 
   function __construct(PdoFactory $pdo=null, array $env=null, OdbcIni $odbcIni=null) {
     if(is_null($pdo)) {
+      $pdo=new PdoFactory();
     }
     $this->pdo=$pdo;
 
@@ -22,6 +23,13 @@ class DbhWrapperFactory {
   }
 
   public function mysql() {
+      $required = ['UPDATER_MYSQLHOST', 'MYSQL_DATABASE', 'MYSQL_USER', 'MYSQL_PASSWORD'];
+      foreach($required as $key) {
+        if(!$this->env[$key]) {
+          throw new \Exception("Missing env var $key");
+        }
+      }
+
     $dbhTemp = $this->pdo->mysql(
       $this->env['UPDATER_MYSQLHOST'],
       $this->env['MYSQL_DATABASE'],
@@ -41,6 +49,15 @@ class DbhWrapperFactory {
     }
 
     $selected = $ini[$name];
+
+    // alert about missing fields
+    $required = ['Database','UID','PWD'];
+    $missing = array_diff($required,array_keys($selected));
+    if(count($missing)>0) {
+      throw new \Exception("odbc.ini file for $name is missing fields: ".implode(', ',$missing));
+    }
+
+    // make connection
     $dbh = $this->pdo->odbc(
       $name,
       $selected['Database'],

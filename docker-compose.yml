@@ -38,6 +38,8 @@ services:
     links:
     - nats
     env_file: .env
+    environment:
+    - MYSQL_PASSWORD=$MYSQL_PASSWORD
 
   copier:
     build:
@@ -51,6 +53,8 @@ services:
     - ./etc:/data/odbc # will copy odbc.ini and odbcinst.ini
     volumes_from:
     - updater:ro
+    ports:
+    - "8082:80"
 
   ui:
     image: nginx:alpine
@@ -59,4 +63,4 @@ services:
     volumes:
     - ./ui/www:/var/www/html
     ports:
-    - "80:80"
+    - "8083:80"

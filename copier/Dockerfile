@@ -1,12 +1,7 @@
 FROM shadiakiki1986/php7-apache-odbc-and-other
 MAINTAINER Shadi Akiki
 
-# PREPARE with APT
-RUN apt-get -qq update > /dev/null \
- && DEBIAN_FRONTEND=noninteractive \
-    apt-get -qq -y install \
-      php-mysql php-sqlite3 \
-      > /dev/null
+RUN docker-php-ext-install mysqli pdo_mysql > /dev/null
 
 VOLUME /data/odbc
 

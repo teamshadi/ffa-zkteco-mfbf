@@ -22,7 +22,7 @@ class Locks extends Mysql {
 
   function raw() {
     // Do the query
-    $secQ = "SELECT * from MF_USERS_LOCK;";
+    $secQ = "SELECT * from MF_USERS_LOCK -- limit 5;";
     return $this->dbh->query($secQ);
   }
 

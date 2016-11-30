@@ -6,8 +6,12 @@ class Odbc {
 
   function __construct(DbhWrapper $dbh=null) {
     if(is_null($dbh)) {
+      // use 1st odbc source by default
+      $odbcIni=new OdbcIni();
+      $ini=$odbcIni->parse();
+      $first=array_keys($ini)[0];
       $fac = new DbhWrapperFactory();
-      $dbh = $fac->odbc();
+      $dbh = $fac->odbc($first);
     }
     $this->dbh = $dbh;
   }
@@ -48,6 +52,10 @@ class Odbc {
     }
 
     $this->dbh->exec(implode('; ',$query));
+  }
+
+  public function get() {
+    return $this->dbh->query("select * from MF_USERS_LOCK");
   }
 
 }

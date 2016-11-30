@@ -43,7 +43,8 @@ class Copier {
     $ini = $this->odbcIni->parse();
 
     foreach($ini as $name=>$value) {
-      $odbc = $this->fac->odbc($name);
+      $dbh = $this->fac->odbc($name);
+      $odbc = new Odbc($dbh);
       $odbc->set($secD);
     }
   }

@@ -1,7 +1,9 @@
 #!/bin/bash
 
+set -e
+
 # SET CRON
-RUN envsubst < etc/cron.env > /etc/cron.d/fingerprints
+envsubst < etc/cron.env > /etc/cron.d/fingerprints
 
 # update MDBtoMySQL if needed
 if [ ! -d $UPDATER_WORKDIR/MDBtoMySQL ]; then
@@ -13,7 +15,9 @@ fi
 
 # below sleep is to wait for mysql server
 # https://docs.docker.com/compose/startup-order/
-sleep 5
+echo "Sleeping 15 secs for mysql server to start"
+sleep 15
+echo "Waking up"
 
 # these 2 bash calls are already in the cron, but this is just a first run
 bash /code/bin/checkMount.sh

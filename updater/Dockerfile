@@ -11,24 +11,30 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get -qq -y install \
     git
 
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get -qq -y install \
+      gettext \
+      > /dev/null
+
+
 # install MDBtoMysql if not there
 ENV UPDATER_WORKDIR /tmp/ffa-zkteco-mfbf
-VOLUME $UPDATER_WORKDIR
-WORKDIR $UPDATER_WORKDIR
+WORKDIR /tmp/ffa-zkteco-mfbf
 RUN git clone https://github.com/shadiakiki1986/MDBtoMySQL
+VOLUME /tmp/ffa-zkteco-mfbf
 
 # Set a volume that can be mounted from host
 VOLUME /data/ZKTeco
 
-# business as usual
 WORKDIR /code
+
+ENV GOPATH=/code
+RUN go get github.com/nats-io/go-nats
+
+# business as usual
 COPY . .
 
 RUN touch /var/log/cron.log
-
-# install
-ENV GOPATH=/code
-RUN go get github.com/nats-io/go-nats
 
 # CONFIGURE MYSQL PASSWORD
 # TODO, use mysql_config_editor to avoid the warnings of "password is not safe to pass in mysql CLI call"
@@ -46,4 +52,4 @@ ENV TZ=Asia/Beirut
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # SET CMD
-CMD bin/init.sh
+CMD bash bin/init.sh

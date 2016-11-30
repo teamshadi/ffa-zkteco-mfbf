@@ -37,19 +37,45 @@ docker-compose up --build --abort-on-container-exit
 ```
 
 # Testing
-1. `updater`
- * The `MDBtoMySQL` script is already tested on travis-ci
- * for the `bin/update.sh` script wrapping it, just run an example usage
-  * test that a local run lock is set to avoid parallel runs if a run is slower than 2 mins
-  * test that stale lock is automatically removed
-  * test that a locks table is updated
-  * test that nats signal is sent out at end of update
-2. `copier`
- * Unit tests: `vendor/bin/phpunit tests/unit`
- * Integration test: `vendor/bin/phpunit tests/integration`
- * End-to-end test:
-  * check that `api.php` is running
-  * check that `natsListener.php` is listening and can trigger a copy
+## `updater`
+* The `MDBtoMySQL` script is already tested on travis-ci
+* for the `bin/update.sh` script wrapping it, just run an example usage
+ * test that a local run lock is set to avoid parallel runs if a run is slower than 2 mins
+ * test that stale lock is automatically removed
+ * test that a locks table is updated
+ * test that nats signal is sent out at end of update
+
+## `copier`
+### Unit tests
+`vendor/bin/phpunit tests/unit`
+### Integration test
+```bash
+export MYSQL_PASSWORD=somepass
+docker-compose up db
+
+export MYSQL_DATABASE=test
+export UPDATER_MYSQLHOST=localhost
+export MYSQL_DATABASE=ffa_price_farm
+export MYSQL_USER=ffaFingerprints
+export MYSQL_PASSWORD=somepass
+export UPDATER_MYSQLHOST=127.0.0.1
+
+vendor/bin/phpunit tests/integration
+```
+### End-to-end test:
+* check that `api.php` is running
+* check that `natsListener.php` is listening and can trigger a copy
+```bash
+export MYSQL_PASSWORD=somepass
+docker-compose up nats db
+
+export UPDATER_MYSQLHOST=127.0.0.1
+export MYSQL_DATABASE=ffa_price_farm
+export MYSQL_USER=ffaFingerprints
+php bin/natsListener.php
+
+GOPATH=`pwd` go run bin/publish.go 
+```
 
 # TODO
 Important

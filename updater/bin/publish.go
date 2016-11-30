@@ -11,6 +11,10 @@ func main() {
   // url := nats.DefaultURL
   // url := "nats://nats-main:4222"
   url := os.Getenv("UPDATER_NATSURI")
+  if url=="" {
+     fmt.Printf("Define env var UPDATER_NATSURI\n")
+     os.Exit(1)
+  }
   fmt.Printf("Publishing to: %s\n", url)
   nc, _ := nats.Connect(url)
 

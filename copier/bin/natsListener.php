@@ -2,13 +2,27 @@
 
 require_once 'vendor/autoload.php';
 
+// get uri to use
+$natsUri = getenv('UPDATER_NATSURI');
+if(!$natsUri) {
+  throw new \Exception('Please set env var UPDATER_NATSURI');
+}
+
+// https://github.com/repejota/phpnats/blob/develop/examples/connect.php
+$options = new \Nats\ConnectionOptions();
+$options
+  ->setHost(parse_url($natsUri, PHP_URL_HOST))
+  ->setPort(parse_url($natsUri, PHP_URL_PORT))
+;
+
 // https://github.com/repejota/phpnats#basic-usage
-$client = new \Nats\Connection();
+$client = new \Nats\Connection($options);
 $client->connect();
 
 # Responding to requests
 $sid = $client->subscribe("foo", function ($res) {
-      $res->reply("Hello, " . $res->getBody() . " !!!");
+      echo("Received nats foo".PHP_EOL);
+      //$res->reply("Hello, " . $res->getBody() . " !!!");
       $copier = new \FfaZktecoMfbf\Copier();
       $copier->copyLocksToOdbc();
 });

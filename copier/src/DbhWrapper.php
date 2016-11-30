@@ -24,7 +24,7 @@ class DbhWrapper {
     }
 
     /*** echo number of columns ***/
-    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
     return $result;
   }
