@@ -47,11 +47,6 @@ services:
     - db
     - updater
     env_file: .env
-    environment:
-    - COPIER_TO_1_PASSWORD=$COPIER_TO_1_PASSWORD
-    - COPIER_TO_2_PASSWORD=$COPIER_TO_2_PASSWORD
-    - COPIER_TO_3_PASSWORD=$COPIER_TO_3_PASSWORD
-    - COPIER_TO_4_PASSWORD=$COPIER_TO_4_PASSWORD
     volumes:
     - ./etc:/data/odbc # will copy odbc.ini and odbcinst.ini
     volumes_from:

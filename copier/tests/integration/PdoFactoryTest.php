@@ -6,7 +6,17 @@ class PdoFactoryTest extends \PHPUnit_Framework_TestCase {
 
   static public $pdoh, $env;
   static public function setUpBeforeClass() {
+    // get env vars
     self::$env = Copier::getenv();
+
+    // append test variables
+    // set from /etc/odbc.ini ?
+    self::$env = array_merge(
+      self::$env,
+      ['TEST_ODBC', 'TEST_DATABASE', 'TEST_USER', 'TEST_PASSWORD']
+    );
+
+    // check which were not found
     $notfound = array_filter(self::$env,function($x) { return !$x; });
     if(count($notfound)>0) {
       self::markTestSkipped("Missing env variable: ".implode(', ',array_keys($notfound)));
@@ -31,11 +41,11 @@ class PdoFactoryTest extends \PHPUnit_Framework_TestCase {
   }
 
   public function testSqlserver() {
-    self::$pdoh->connectOdbcDsn(
-      self::$env['COPIER_TO_1_ODBC'], // from /etc/odbc.ini
-      self::$env['COPIER_TO_1_DATABASE'],
-      self::$env['COPIER_TO_1_USER'],
-      self::$env['COPIER_TO_1_PASSWORD']
+    self::$pdoh->odbc(
+      self::$env['TEST_ODBC'], 
+      self::$env['TEST_DATABASE'],
+      self::$env['TEST_USER'],
+      self::$env['TEST_PASSWORD']
     );
     $res = self::$pdoh->query('select count(*) as n from MF_USERS_LOCK');
     $this->assertLessThan(2,1);

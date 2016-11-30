@@ -5,8 +5,10 @@ namespace FfaZktecoMfbf;
 class DbhWrapper {
 
   public $dbh;
-  function __construct(\PDO $dbh) {
+  public $name;
+  function __construct(\PDO $dbh, string $name) {
     $this->dbh = $dbh;
+    $this->name = $name;
   }
 
   public function query(string $sql) {

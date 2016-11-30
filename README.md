@@ -1,40 +1,74 @@
 # fingerprints-adapter
-This is a server-side program that links the fingerprints machine database in FFA to Marketflow/Bankflow.
+This is a server-side program that links the ZKTeco fingerprints machine database in FFA to Marketflow/Bankflow to log out users who are not in the building (and not let them log in).
 
 It is divided into 2 main workers:
 1. [updater](updater):
+ * runs every 2 mins
  * copies the ZKTeco database (access mdb file) from a laptop to the local machine
- * imports copied access file to server database (MySql) using [mdbtools](https://github.com/brianb/mdbtools)
- * does so every 2 mins
- * triggers the processor worker (below)
-2. [processor](processor):
+ * imports copied access file to server database (MySql) using [MDBtoMySQL](https://github.com/shadiakiki1986/MDBtoMySQL), which wraps [mdbtools](https://github.com/brianb/mdbtools)
  * reads tables in MySql database and spits out table of lock/unlock for each user
+ * triggers the copier worker (below)
+2. [copier](copier):
  * copies lock/unlock table from local database (MySql) to a foreign database (SQL Server)
  * triggers a user-defined web-hook
 
 # Usage
-1. Copy odbc.ini and odbcinst.ini to root folder
-2.
+1. Create on target MF/BF databases
+```sql
+-- On Mf PriceFarm ms sql d/b (once for lebanon and once for dubai)
+CREATE TABLE MF_USERS_LOCK(
+DEPTNAME                        varchar (60),
+mfid  varchar (40),
+bfid  varchar (40),
+Name varchar (40),
+Locked boolean
+);
 ```
-docker-compose up --build --abort-on-container-exit \
-  --env MYSQL_PASSWORD=something \
-  --env COPIER_TO_1_PASSWORD=something \
-  --env COPIER_TO_2_PASSWORD=something \
-  --env COPIER_TO_3_PASSWORD=something \
-  --env COPIER_TO_4_PASSWORD=something
+2. Copy odbc.ini and odbcinst.ini to an `etc` folder in the root folder
+ * all sources in the `odbc.ini` file will be used to copy to
+ * note that fields `mfid_lb` and `bfid_lb` are used by default.
+  * When the ODBC DSN is `MarketflowAccDB` or `MarketflowBsalimDxb`, then `mfid_db` and `bfid_db` are used
+3.
 ```
-
-# Important SQL queries
-Please check [importantQueries.txt](importantQueries.txt)
+docker-compose up --build --abort-on-container-exit
+```
 
 # Testing
-1. Run the test in `databases-api/tests/test_01_FingerprintsClient.php`
-2. `php tests/*`
+1. `updater`
+ * The `MDBtoMySQL` script is already tested on travis-ci
+ * for the `bin/update.sh` script wrapping it, just run an example usage
+  * test that a local run lock is set to avoid parallel runs if a run is slower than 2 mins
+  * test that stale lock is automatically removed
+  * test that a locks table is updated
+  * test that nats signal is sent out at end of update
+2. `copier`
+ * Unit tests: `vendor/bin/phpunit tests/unit`
+ * Integration test: `vendor/bin/phpunit tests/integration`
+ * End-to-end test:
+  * check that `api.php` is running
+  * check that `natsListener.php` is listening and can trigger a copy
 
 # TODO
+Important
 * updater: why does cron job not output mysql warnings?
+* add "date of last update"
+* add check if MF ID is valid
+* add copyLocksToMf (similar to putLocks) to FingerprintsClient
 
-# initdb/updater.sql
+Nice
+* split out from updater a docker-MDBtoMySQL repo that has cron+nats capability
+* replace cron with [jobber](https://github.com/dshearer/jobber)
+* add plot total users in bank versus time
+* add socket connection for live update in open window
+ * add audio notification + highlight of rows most recently updated
+* add register email alert for "in bldg" change of a user
+
+
+# Useful notes
+
+Please check [importantQueries.txt](importantQueries.txt)
+
+```
 --- On FFA 2.0 mysql datbabase
 --- The following is how I got to this file: mdb-schema ~/att2000.mdb mysql > att2000.sql
 -
@@ -49,3 +83,4 @@ Please check [importantQueries.txt](importantQueries.txt)
 -----------------
 -- Note that datatime fields in ms sql server become timestamp
 --
+```

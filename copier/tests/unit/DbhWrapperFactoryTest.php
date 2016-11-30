@@ -14,21 +14,34 @@ class DbhWrapperFactoryTest extends \PHPUnit_Framework_TestCase {
         ->willReturn($dbh);
     $this->pdo->method('odbc')
         ->willReturn($dbh);
+
+    $ini = [
+      'marketflow' => [
+        'Database' => 'database',
+        'PWD' => 'password',
+        'UID' => 'user'
+      ]
+    ];
+    $this->odbcIni = $this->getMockBuilder('\FfaZktecoMfbf\OdbcIni')
+                 ->disableOriginalConstructor() 
+                 ->getMock();
+    $this->odbcIni->method('parse')
+        ->willReturn($ini);
   }
 
   public function testMysql() {
     $env=array_flip(['UPDATER_MYSQLHOST','MYSQL_DATABASE','MYSQL_USER','MYSQL_PASSWORD']);
 
-    $fac = new DbhWrapperFactory($this->pdo,$env);
+    $fac = new DbhWrapperFactory($this->pdo,$env,$this->odbcIni);
     $dbh = $fac->mysql();
     $this->assertInstanceOf(DbhWrapper::class,$dbh);
   }
 
   public function testOdbc() {
-    $env=array_flip(['COPIER_TO_1_ODBC','COPIER_TO_1_DATABASE','COPIER_TO_1_USER','COPIER_TO_1_PASSWORD']);
+    $env=[];
 
-    $fac = new DbhWrapperFactory($this->pdo,$env);
-    $dbh = $fac->odbc(1);
+    $fac = new DbhWrapperFactory($this->pdo,$env,$this->odbcIni);
+    $dbh = $fac->odbc('marketflow');
     $this->assertInstanceOf(DbhWrapper::class,$dbh);
   }
 

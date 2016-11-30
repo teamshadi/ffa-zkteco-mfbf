@@ -6,7 +6,7 @@ class DbhWrapperTest extends \PHPUnit_Framework_TestCase {
 
   static public $dbh;
   static public function setUpBeforeClass() {
-    self::$dbh = new DbhWrapper(new \PDO("sqlite::memory:"));
+    self::$dbh = new DbhWrapper(new \PDO("sqlite::memory:"),'phpunit sqlite memory');
   }
 
   public function test() {

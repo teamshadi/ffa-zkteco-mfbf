@@ -1,5 +1,4 @@
 #!/bin/sh
-# This is tailored for mdb-export 0.5.0
 
 set -e
 

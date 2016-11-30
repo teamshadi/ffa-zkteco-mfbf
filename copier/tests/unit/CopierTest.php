@@ -17,7 +17,26 @@ class CopierTest extends \PHPUnit_Framework_TestCase {
     $odbc->method('set')
         ->willReturn(null);
 
-    $copier = new Copier($locks,$odbc);
+    $fac = $this->getMockBuilder('\FfaZktecoMfbf\DbhWrapperFactory')
+                 ->disableOriginalConstructor() 
+                 ->getMock();
+    $fac->method('odbc')
+        ->willReturn($odbc);
+
+    $ini = [
+      'marketflow' => [
+        'Database' => 'database',
+        'PWD' => 'password',
+        'UID' => 'user'
+      ]
+    ];
+    $odbcIni = $this->getMockBuilder('\FfaZktecoMfbf\OdbcIni')
+                 ->disableOriginalConstructor() 
+                 ->getMock();
+    $odbcIni->method('parse')
+        ->willReturn($ini);
+
+    $copier = new Copier($locks,$fac,$odbcIni);
     $copier->copyLocksToOdbc();
   }
 

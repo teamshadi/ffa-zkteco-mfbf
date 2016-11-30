@@ -4,7 +4,7 @@ namespace FfaZktecoMfbf;
 
 class DbhWrapperFactory {
 
-  function __construct(PdoFactory $pdo=null, array $env=null) {
+  function __construct(PdoFactory $pdo=null, array $env=null, OdbcIni $odbcIni=null) {
     if(is_null($pdo)) {
     }
     $this->pdo=$pdo;
@@ -13,6 +13,12 @@ class DbhWrapperFactory {
       $env = Copier::getenv();
     }
     $this->env = $env;
+
+    if(is_null($odbcIni)) {
+      $odbcIni = new OdbcIni();
+    }
+    $this->odbcIni = $odbcIni;
+
   }
 
   public function mysql() {
@@ -23,17 +29,25 @@ class DbhWrapperFactory {
       $this->env['MYSQL_PASSWORD']
     );
 
-    return new DbhWrapper($dbhTemp);
+    return new DbhWrapper($dbhTemp,'mysql');
   }
 
-  public function odbc(int $db) {
+  // $name    name of odbc dsn, as in /etc/odbc.ini
+  public function odbc(string $name) {
+    $ini = $this->odbcIni->parse();
+
+    if(!array_key_exists($name,$ini)) {
+      throw new \Exception("ODBC DSN \"$name\" does not exist. Use one of: ".implode(', ',array_keys($ini)));
+    }
+
+    $selected = $ini[$name];
     $dbh = $this->pdo->odbc(
-      $this->env['COPIER_TO_'.$db.'_ODBC'],
-      $this->env['COPIER_TO_'.$db.'_DATABASE'],
-      $this->env['COPIER_TO_'.$db.'_USER'],
-      $this->env['COPIER_TO_'.$db.'_PASSWORD']
+      $name,
+      $selected['Database'],
+      $selected['UID'],
+      $selected['PWD']
     );
 
-    return new DbhWrapper($dbh);
+    return new DbhWrapper($dbh,$name);
   }
 }

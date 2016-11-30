@@ -4,25 +4,20 @@ namespace FfaZktecoMfbf;
 
 class Odbc {
 
-  function __construct(DbhWrapper $dbh=null, array $env) {
+  function __construct(DbhWrapper $dbh=null) {
     if(is_null($dbh)) {
       $fac = new DbhWrapperFactory();
       $dbh = $fac->odbc();
     }
     $this->dbh = $dbh;
-
-    if(is_null($env)) {
-      $env=Copier::getenv();
-    }
-    $this->env=$env;
   }
 
   // secD: output from Locks->raw
-  public function set(int $i, array $secD) {
+  public function set(array $secD) {
 
-    // set suffix based on configuration in .env file
+    // set suffix
     $db='lb';
-    if($i==2 || $i==4) {
+    if(in_array($this->dbh->name,['MarketflowAccDB','MarketflowBsalimDxb'])) {
       $db='db';
     }
 

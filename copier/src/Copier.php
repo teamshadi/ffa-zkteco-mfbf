@@ -4,16 +4,21 @@ namespace FfaZktecoMfbf;
 
 class Copier {
 
-  function __construct(Locks $locks=null, Odbc $odbc=null) {
+  function __construct(Locks $locks=null, DbhWrapperFactory $fac=null, OdbcIni $odbcIni=null) {
     if(is_null($locks)) {
       $locks = new Locks();
     }
     $this->locks = $locks;
 
-    if(is_null($odbc)) {
-      $odbc = new Odbc();
+    if(is_null($fac)) {
+      $fac = new DbhWrapperFactory();
     }
-    $this->odbc = $odbc;
+    $this->fac = $fac;
+
+    if(is_null($odbcIni)) {
+      $odbcIni = new OdbcIni();
+    }
+    $this->odbcIni = $odbcIni;
   }
 
   static public function getenv() {
@@ -22,17 +27,7 @@ class Copier {
       'MYSQL_USER' => false,
       'MYSQL_PASSWORD' => false,
 
-      'UPDATER_MYSQLHOST' => false,
-
-      'COPIER_TO_1_ODBC' => false,
-      'COPIER_TO_1_DATABASE' => false,
-      'COPIER_TO_1_USER' => false,
-      'COPIER_TO_1_PASSWORD' => false,
-
-      'COPIER_TO_2_ODBC' => false,
-      'COPIER_TO_2_DATABASE' => false,
-      'COPIER_TO_2_USER' => false,
-      'COPIER_TO_2_PASSWORD' => false
+      'UPDATER_MYSQLHOST' => false
     ];
 
     foreach($env as $k=>&$v) {
@@ -44,10 +39,13 @@ class Copier {
 
   public function copyLocksToOdbc() {
     $secD = $this->locks->raw();
-    $this->odbc->set(1,$secD);
-    $this->odbc->set(2,$secD);
-    $this->odbc->set(3,$secD);
-    $this->odbc->set(4,$secD);
+
+    $ini = $this->odbcIni->parse();
+
+    foreach($ini as $name=>$value) {
+      $odbc = $this->fac->odbc($name);
+      $odbc->set($secD);
+    }
   }
 
 }

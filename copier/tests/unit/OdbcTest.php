@@ -5,13 +5,12 @@ namespace FfaZktecoMfbf;
 class OdbcTest extends DbhWrapperTest {
 
   static public $locksRaw = [
-    ['DEPTNAME'=>'pmo','mf'=>'shadi',  'bf'=>'shadi',  'Name'=>'Shadi Akiki','Locked'=>1],
-    ['DEPTNAME'=>'pmo','mf'=>'minerva','bf'=>'minerva','Name'=>'Minerva Moawad','Locked'=>0]
+    ['DEPTNAME'=>'pmo','mfid_lb'=>'shadi',  'bfid_lb'=>'shadi',  'Name'=>'Shadi Akiki','Locked'=>1],
+    ['DEPTNAME'=>'pmo','mfid_lb'=>'minerva','bfid_lb'=>'minerva','Name'=>'Minerva Moawad','Locked'=>0]
   ];
 
   public function setUp() {
-    $env = ['COPIER_TO_1_FIELD_MF'=>'mf','COPIER_TO_1_FIELD_BF'=>'bf'];
-    $this->odbc = new Odbc(self::$dbh,$env);
+    $this->odbc = new Odbc(self::$dbh);
   }
 
   public function testConstruct() {
@@ -22,11 +21,11 @@ class OdbcTest extends DbhWrapperTest {
   }
 
   public function testSetEmpty() {
-    $this->odbc->set(1,[]);
+    $this->odbc->set([]);
   }
 
   public function testSetNonEmpty() {
-    $this->odbc->set(1,self::$locksRaw);
+    $this->odbc->set(self::$locksRaw);
   }
 
 } // end class
