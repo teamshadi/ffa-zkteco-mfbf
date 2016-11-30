@@ -10,7 +10,7 @@ function Controller1($scope) {
 	$scope.lastUpdate={"lastUpdate":"","lastcheckinout":""};
 	$scope.getLastUpdate = function() {
 		$.ajax({type:'GET',
-			url: FINGERPRINTS_ADAPTER_SERVER_URL+'/api/getLastUpdate.php',
+			url: SERVER_URL+'/api.php?action=lastUpdate',
 			dataType: 'json',
 			success: function(rt) {
 				if(rt.hasOwnProperty("error")) {
@@ -25,7 +25,7 @@ function Controller1($scope) {
 
 	$scope.getUserAll = function() {
 		$.ajax({type:'GET',
-			url: FINGERPRINTS_ADAPTER_SERVER_URL+'/api/getUserAll.php',
+			url: SERVER_URL+'/api.php?action=users',
 			dataType: 'json',
 			success: function(rt) {
 				if(rt.hasOwnProperty("error")) {
@@ -56,7 +56,7 @@ function Controller1($scope) {
 	$scope.putUserAll=function() {
 		$scope.putUserAllStatus=true;
 		$.ajax({type:'POST',
-			url: FINGERPRINTS_ADAPTER_SERVER_URL+'/api/putUserAll.php',
+			url: SERVER_URL+'/api.php',
 			data: { data: angular.toJson(dataToPut()) },
 			dataType: 'json',
 			success: function(rt) {
