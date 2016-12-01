@@ -44,7 +44,8 @@ function Controller1($scope) {
 	dataToOri=function() { return angular.toJson(Object.keys($scope.data).map(function(x) { return $scope.data[x].state; }).sort()); };
 	dataToPut=function() {
 		o=Object.keys($scope.data)
-		.filter(function(x) { return $scope.data[x].state!="auto"; })
+		// 2016-12-01 do not filter out auto
+    // .filter(function(x) { return $scope.data[x].state!="auto"; })
 		.map(function(x) { return {'USERID':$scope.data[x].USERID,'state':$scope.data[x].state}; })
 		;
 		return o;

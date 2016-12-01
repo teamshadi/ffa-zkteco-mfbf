@@ -59,6 +59,9 @@ class API {
 
       case "POST":
         $this->states->put(json_decode($post['data'],true));
+        $this->locks->update();
+        $copier = new \FfaZktecoMfbf\Copier();
+        $copier->copyLocksToOdbc();
         return "{}";
         break;
 
@@ -80,7 +83,7 @@ class API {
 
         $fn="/tmp/ffa-zkteco-mfbf/lastupdate.txt";
         if(file_exists($fn)) {
-          $last = trim(fileget_contents($fn));
+          $last = trim(file_get_contents($fn));
           if($last) $out['lastUpdate']=$last;
         }
 

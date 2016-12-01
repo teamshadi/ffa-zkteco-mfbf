@@ -38,6 +38,9 @@ class Copier {
   }
 
   public function copyLocksToOdbc() {
+    # TODO currently disabled. Enable when ok
+    return;
+
     $secD = $this->locks->raw();
 
     $ini = $this->odbcIni->parse();

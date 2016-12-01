@@ -24,6 +24,7 @@ $sid = $client->subscribe("foo", function ($res) {
       echo("Received nats foo".PHP_EOL);
       //$res->reply("Hello, " . $res->getBody() . " !!!");
       $copier = new \FfaZktecoMfbf\Copier();
+      $copier->locks->update();
       $copier->copyLocksToOdbc();
       echo("Completed copy".PHP_EOL);
 });

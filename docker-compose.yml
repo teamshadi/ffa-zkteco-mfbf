@@ -21,10 +21,10 @@ services:
   nats:
     # https://hub.docker.com/_/nats/
     image: nats
-    ports:
-    - 4222:4222
-    - 8222:8222
-    - 6222:6222
+    #ports:
+    #- 4222:4222
+    #- 8222:8222
+    #- 6222:6222
 
   updater:
     build:
@@ -53,16 +53,19 @@ services:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
     volumes:
     - ./etc:/data/odbc # will copy odbc.ini and odbcinst.ini
+    - ./copier/etc:/data/apache2
     volumes_from:
     - updater:ro
-    ports:
-    - "8082:80"
+    # no need to expose port since redirected internally in service "ui"
+    #ports:
+    #- "8082:80"
 
   ui:
     image: nginx:alpine
     depends_on:
     - copier
     volumes:
-    - ./ui/www:/var/www/html
+    - ./ui/www:/usr/share/nginx/html
+    - ./ui/etc/:/etc/nginx/conf.d/
     ports:
     - "8083:80"

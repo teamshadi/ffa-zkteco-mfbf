@@ -14,7 +14,7 @@ USERINFO.Name,
 case(MF_USERS_STATE.state)
 	when 'lock' then TRUE
 	when 'unlock' then FALSE
-	else
+	when 'auto' then
 		case
 			when CHECKTIME>=curdate() -- and CHECKTIME<now()
 			then 
@@ -24,6 +24,7 @@ case(MF_USERS_STATE.state)
 				end
 			else TRUE -- lock absent users
 		end
+  else FALSE -- default at initialization is all users unlocked
 end as Locked,
 case
 	when CHECKTIME>=curdate() -- and CHECKTIME<now()
@@ -43,16 +44,16 @@ from (
 	    where CHECKTIME>=curdate()
 	    group by USERID
 	) a on a.USERID=CHECKINOUT.USERID and a.id=CHECKINOUT.CHECKTIME -- id / CHECKTIME
---	union -- add absent people ... this is very slow
---	(
---		select USERINFO.USERID,'O' as CHECKTYPE,'1990-01-01' as id
---		from USERINFO
---		where USERINFO.USERID not in (
---			SELECT distinct USERID
---			FROM CHECKINOUT
---			where CHECKTIME>=curdate()
---		)
---	)
+	union -- add absent people ... this is very slow
+	(
+		select USERINFO.USERID,'O' as CHECKTYPE,'1990-01-01' as id
+		from USERINFO
+		where USERINFO.USERID not in (
+			SELECT distinct USERID
+			FROM CHECKINOUT
+			where CHECKTIME>=curdate()
+		)
+	)
 
 ) CHECKINOUT
 left join USERINFO on CHECKINOUT.USERID=USERINFO.USERID

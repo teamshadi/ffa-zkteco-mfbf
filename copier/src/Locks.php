@@ -8,7 +8,9 @@ class Locks extends Mysql {
     // Do the query
     $secQ = "SELECT MF_USERS_LOCK.*,
       case
-        when MF_USERS_STATE.state is NULL then 'auto'
+         -- default is unlocked if not there
+        -- this should be in sync with the default in update_MF_USERS_LOCK
+        when MF_USERS_STATE.state is NULL then 'unlock'
         else MF_USERS_STATE.state
       end as state
       from MF_USERS_LOCK 
@@ -24,6 +26,12 @@ class Locks extends Mysql {
     // Do the query
     $secQ = "SELECT * from MF_USERS_LOCK -- limit 5;";
     return $this->dbh->query($secQ);
+  }
+
+  function update() {
+    $this->dbh->exec("truncate MF_USERS_LOCK;");
+    $sql = file_get_contents(__DIR__.'/update_MF_USERS_LOCK.sql');
+    return $this->dbh->exec($sql);
   }
 
 }
