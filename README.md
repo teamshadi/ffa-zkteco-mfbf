@@ -1,21 +1,26 @@
 # fingerprints-adapter
-This is a server-side program that links the ZKTeco fingerprints machine database in FFA to Marketflow/Bankflow to log out users who are not in the building (and not let them log in).
+This is a server-side program that links the ZKTeco fingerprints machine database (MS Access file from ZKAccess 3.5)
+in FFA to Marketflow/Bankflow to log out users who are not in the building (and not let them log in).
 
 It is divided into the following parts:
+
 1. [updater](updater):
- * runs every 2 mins
- * copies the ZKTeco database (access mdb file) from a laptop to the local machine
- * imports copied access file to server database (MySql) using [MDBtoMySQL](https://github.com/shadiakiki1986/MDBtoMySQL), which wraps [mdbtools](https://github.com/brianb/mdbtools)
- * reads tables in MySql database and spits out table of lock/unlock for each user
- * triggers the copier worker (below)
+* runs every 2 mins
+* copies the ZKTeco database (access mdb file) from a laptop to the local machine
+* imports copied access file to server database (MySql) using [MDBtoMySQL](https://github.com/shadiakiki1986/MDBtoMySQL), which wraps [mdbtools](https://github.com/brianb/mdbtools)
+* reads tables in MySql database and spits out table of lock/unlock for each user
+* triggers the copier worker (below)
+
 2. [copier](copier):
- * copies lock/unlock table from local database (MySql) to a foreign database (SQL Server)
- * triggers a user-defined web-hook
+* copies lock/unlock table from local database (MySql) to a foreign database (SQL Server)
+* triggers a user-defined web-hook
+
 3. [ui](ui):
- * user web interface served at port 80
- * javascript+angular
+* user web interface served at port 80
+* javascript+angular
 
 # Usage
+
 1. Create on target MF/BF databases
 ```sql
 -- On Mf PriceFarm ms sql d/b (once for lebanon and once for dubai)
@@ -27,10 +32,17 @@ Name varchar (40),
 Locked boolean
 );
 ```
+
 2. Copy odbc.ini and odbcinst.ini to an `etc` folder in the root folder
- * all sources in the `odbc.ini` file will be used to copy to
- * note that fields `mfid_lb` and `bfid_lb` are used by default.
-  * When the ODBC DSN is `MarketflowAccDB` or `MarketflowBsalimDxb`, then `mfid_db` and `bfid_db` are used
+* all sources in the `odbc.ini` file will be used to copy to
+* note that fields `mfid_lb` and `bfid_lb` are used by default.
+ * When the ODBC DSN is `MarketflowAccDB` or `MarketflowBsalimDxb`, then `mfid_db` and `bfid_db` are used
+* mf/bf userids are input in the ZKAccess program, user info, under fields:
+ * marketflow lebanon: MINZU
+ * bankflow lebanon: TITLE
+ * marketflow dubai: SSN
+ * bankflow dubai: OPHONE
+
 3.
 ```
 docker-compose up --build --abort-on-container-exit
