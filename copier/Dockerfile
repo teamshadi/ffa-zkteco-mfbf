@@ -3,6 +3,11 @@ MAINTAINER Shadi Akiki
 
 RUN docker-php-ext-install mysqli pdo_mysql > /dev/null
 
+RUN cd /usr/src/php/ext/pdo_odbc \
+ && phpize \
+ && ./configure --with-pdo-odbc=unixODBC,/usr > /dev/null \
+ && docker-php-ext-install pdo_odbc > /dev/null
+
 VOLUME /data/odbc
 
 # Continue

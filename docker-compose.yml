@@ -13,8 +13,8 @@ services:
     env_file: .env
     environment:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
-    ports:
-    - "3306:3306"
+    #ports:
+    #- "3306:3306"
     volumes:
     - ./initdb:/docker-entrypoint-initdb.d/
 
@@ -49,6 +49,8 @@ services:
     - db
     - updater
     env_file: .env
+    environment:
+    - MYSQL_PASSWORD=$MYSQL_PASSWORD
     volumes:
     - ./etc:/data/odbc # will copy odbc.ini and odbcinst.ini
     volumes_from:

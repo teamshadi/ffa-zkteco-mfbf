@@ -43,6 +43,7 @@ class Copier {
     $ini = $this->odbcIni->parse();
 
     foreach($ini as $name=>$value) {
+      echo "Copying locks to $name".PHP_EOL;
       $dbh = $this->fac->odbc($name);
       $odbc = new Odbc($dbh);
       $odbc->set($secD);
