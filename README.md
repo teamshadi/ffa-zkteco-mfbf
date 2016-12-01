@@ -45,6 +45,7 @@ It is divided into the following parts:
 
 3.
 ```
+export MYSQL_PASSWORD=choosepass
 docker-compose up --build --abort-on-container-exit
 ```
 
