@@ -7,9 +7,9 @@ class Checkinout extends Mysql {
   function getMax() {
 
     // Do the query
-    $secQ = "SELECT max(CHECKTIME) CHECKTIME from CHECKINOUT;";
+    $secQ = "SELECT max(time) time from acc_monitor_log;";
     $secD = $this->dbh->query($secQ);
-    return $secD[0]['CHECKTIME'];
+    return $secD[0]['time'];
   }
 
 

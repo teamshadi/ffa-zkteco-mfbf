@@ -1,4 +1,4 @@
--- each user's current state in/out of bank based on CHECKTIME but based on last-added row
+-- each user's current state in/out of bank based on "time" field but based on last-added row
 insert into MF_USERS_LOCK
 select distinct
 USERINFO.USERID,
@@ -16,10 +16,10 @@ case(MF_USERS_STATE.state)
 	when 'unlock' then FALSE
 	when 'auto' then
 		case
-			when CHECKTIME>=curdate() -- and CHECKTIME<now()
+			when time>=curdate() -- and time<now()
 			then 
-				case(CHECKINOUT.CHECKTYPE)
-					when 'O' then TRUE
+				case(acc_monitor_log.state)
+					when '1' then TRUE
 					else FALSE
 				end
 			else TRUE -- lock absent users
@@ -27,36 +27,36 @@ case(MF_USERS_STATE.state)
   else FALSE -- default at initialization is all users unlocked
 end as Locked,
 case
-	when CHECKTIME>=curdate() -- and CHECKTIME<now()
+	when time>=curdate() -- and time<now()
 	then 
-		case(CHECKINOUT.CHECKTYPE)
-			when 'O' then FALSE
+		case(acc_monitor_log.state)
+			when '1' then FALSE
 			else TRUE
 		end
 	else FALSE -- lock absent users
 end as inBldg
 from (
-	select CHECKINOUT.USERID,CHECKTYPE,CHECKTIME
-	from CHECKINOUT
+	select acc_monitor_log.pin,state,time
+	from acc_monitor_log
 	right join (
-	    SELECT max(CHECKTIME) as id,USERID -- id, CHECKTIME
-	    FROM CHECKINOUT
-	    where CHECKTIME>=curdate()
-	    group by USERID
-	) a on a.USERID=CHECKINOUT.USERID and a.id=CHECKINOUT.CHECKTIME -- id / CHECKTIME
+	    SELECT max(time) as id,pin -- id, time
+	    FROM acc_monitor_log
+	    where time>=curdate()
+	    group by pin
+	) a on a.pin=acc_monitor_log.pin and a.id=acc_monitor_log.time -- id / time
 	union -- add absent people ... this is very slow
 	(
-		select USERINFO.USERID,'O' as CHECKTYPE,'1990-01-01' as id
+		select USERINFO.USERID,'1' as state,'1990-01-01' as id
 		from USERINFO
 		where USERINFO.USERID not in (
-			SELECT distinct USERID
-			FROM CHECKINOUT
-			where CHECKTIME>=curdate()
+			SELECT distinct pin
+			FROM acc_monitor_log
+			where time>=curdate()
 		)
 	)
 
-) CHECKINOUT
-left join USERINFO on CHECKINOUT.USERID=USERINFO.USERID
+) acc_monitor_log
+left join USERINFO on acc_monitor_log.pin=USERINFO.USERID
 left join DEPARTMENTS on DEPARTMENTS.DEPTID=USERINFO.DEFAULTDEPTID
 left join MF_USERS_STATE on USERINFO.USERID=MF_USERS_STATE.USERID
 ;

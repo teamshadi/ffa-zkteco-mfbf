@@ -25,7 +25,7 @@ $sid = $client->subscribe("foo", function ($res) {
       //$res->reply("Hello, " . $res->getBody() . " !!!");
       $copier = new \FfaZktecoMfbf\Copier();
       $copier->locks->update();
-      $copier->copyLocksToOdbc();
+      $copier->copyLocksToOdbc(true);
       echo("Completed copy".PHP_EOL);
 });
 

@@ -37,16 +37,15 @@ class Copier {
     return $env;
   }
 
-  public function copyLocksToOdbc() {
-    # TODO currently disabled. Enable when ok
-    return;
-
+  public function copyLocksToOdbc($verbose=false) {
     $secD = $this->locks->raw();
 
     $ini = $this->odbcIni->parse();
 
     foreach($ini as $name=>$value) {
-      echo "Copying locks to $name".PHP_EOL;
+      if($verbose) {
+        echo "Copying locks to $name".PHP_EOL;
+      }
       $dbh = $this->fac->odbc($name);
       $odbc = new Odbc($dbh);
       $odbc->set($secD);

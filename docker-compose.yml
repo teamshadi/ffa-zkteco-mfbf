@@ -13,8 +13,8 @@ services:
     env_file: .env
     environment:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
-    #ports:
-    #- "3306:3306"
+    ports:
+    - "3306:3306"
     volumes:
     - ./initdb:/docker-entrypoint-initdb.d/
 
@@ -31,7 +31,8 @@ services:
       context: updater
       dockerfile: Dockerfile
     volumes:
-    - /mnt/fingerprints/Program Files/ZKTeco/:/data/ZKTeco
+    # - /mnt/fingerprints/Program Files/ZKTeco/:/data/ZKTeco
+    - /mnt/minerva-laptop/ZKTeco/ZKAccess3.5:/data/ZKTeco
     depends_on:
     - db
     - nats

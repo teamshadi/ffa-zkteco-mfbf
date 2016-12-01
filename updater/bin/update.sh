@@ -68,8 +68,8 @@ bash $UPDATER_WORKDIR/MDBtoMySQL/MDBtoMySQL.sh \
   -u "$MYSQL_USER" \
   -p "$MYSQL_PASSWORD" \
   -h "$UPDATER_MYSQLHOST" \
-  -g CHECKINOUT \
-  -t USERINFO,DEPARTMENTS,CHECKINOUT
+  -g acc_monitor_log \
+  -t USERINFO,DEPARTMENTS,acc_monitor_log
 # acc_monitor_log \
 
 #
