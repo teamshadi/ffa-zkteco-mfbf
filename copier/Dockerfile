@@ -22,9 +22,4 @@ COPY . .
 RUN composer install --quiet
 
 # LAUNCH
-CMD cp /etc/ffa-zkteco-mfbf-copier-odbc/odbc.ini /etc/ \
-  && cp /etc/ffa-zkteco-mfbf-copier-odbc/odbcinst.ini /etc/ \
-  && envsubst < ./etc/apache2/copier.conf > /etc/apache2/sites-available/copier.conf \
-  && ln -s /etc/apache2/sites-available/copier.conf /etc/apache2/sites-enabled/copier.conf \
-  && service apache2 start \
-  && php bin/natsListener.php
+CMD bash init.sh
