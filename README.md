@@ -21,6 +21,7 @@ It is divided into the following parts:
 
 # Usage
 
+## Method 1: local clone of repository
 1. Create on target MF/BF databases
 
     ```sql
@@ -33,7 +34,14 @@ It is divided into the following parts:
     Locked boolean
     );
     ```
-2. Copy odbc.ini and odbcinst.ini to an `etc` folder in the root folder
+2. clone the repository
+
+    ```bash
+    git clone https://github.com/shadiakiki1986/ffa-zkteco-mfbf
+    cd ffa-zkteco-mfbf
+    ```
+3. Place your copies of odbc.ini and odbcinst.ini to a `/etc/ffa-zkteco-mfbf-copier-odbc` folder
+ * a sample file is provided in `copier/etc/odbc/odbc-sample.ini`
  * all sources in the `odbc.ini` file will be used to copy to
  * note that fields `mfid_lb` and `bfid_lb` are used by default.
   * When the ODBC DSN is `MarketflowAccDB` or `MarketflowBsalimDxb`, then `mfid_db` and `bfid_db` are used
@@ -43,10 +51,48 @@ It is divided into the following parts:
   * marketflow dubai: SSN
   * bankflow dubai: OPHONE
 
-3.
+3. run services with `docker-compose`
 ```
 export MYSQL_PASSWORD=choosepass
 docker-compose up --build --abort-on-container-exit
+```
+
+## Method 2: include services as part of your own docker-compose
+1. Create on target MF/BF databases as in method 1 above
+2. clone the repository into the folder containing your docker-compose.yml file
+3. append the docker-compose.yml file in this repository to your own docker-compose.yml
+ * alternatively, launch your services using multiple docker-compose.yml files using the `-f` flag from `docker-compose`
+
+## Method 3: build ffa-zkteco-mfbf into a single bundled service in one Dockerfile
+
+Dockerfile
+```
+FROM docker/compose:1.9.0
+
+RUN apk -U add git
+WORKDIR /code/ffa-zkteco-mfbf
+RUN git clone https://github.com/shadiakiki1986/ffa-zkteco-mfbf .
+COPY ./etc .
+RUN test -f ./etc/odbc.ini && test -f ./etc/odbcinst.ini
+
+# copied from https://hub.docker.com/r/docker/compose/tags/1.9.0/
+ENTRYPOINT /usr/bin/docker-compose up 
+# ENTRYPOINT ["/bin/sh", "-c"]
+```
+
+docker-compose.yml section
+```
+  fingerprints:
+    build:
+      context: ffa-zkteco-mfbf
+      dockerfile: Dockerfile
+    # the docker-compose.yml in the repo already serves at 8083 by default
+    # ports:
+    # - "8084:8083"
+    environment:
+    - MYSQL_PASSWORD=somepass
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
 ```
 
 # Testing

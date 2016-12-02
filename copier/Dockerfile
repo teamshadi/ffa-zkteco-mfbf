@@ -14,7 +14,7 @@ RUN apt-get -qq update > /dev/null \
       gettext \
       > /dev/null
 
-VOLUME /data/odbc
+VOLUME /etc/ffa-zkteco-mfbf-copier
 
 # Continue
 WORKDIR /code
@@ -22,9 +22,9 @@ COPY . .
 RUN composer install --quiet
 
 # LAUNCH
-CMD cp /data/odbc/odbc.ini /etc/ \
-  && cp /data/odbc/odbcinst.ini /etc/ \
-  && envsubst < /data/apache2/copier.conf > /etc/apache2/sites-available/copier.conf \
+CMD cp /etc/ffa-zkteco-mfbf-copier-odbc/odbc.ini /etc/ \
+  && cp /etc/ffa-zkteco-mfbf-copier-odbc/odbcinst.ini /etc/ \
+  && envsubst < ./etc/apache2/copier.conf > /etc/apache2/sites-available/copier.conf \
   && ln -s /etc/apache2/sites-available/copier.conf /etc/apache2/sites-enabled/copier.conf \
   && service apache2 start \
   && php bin/natsListener.php

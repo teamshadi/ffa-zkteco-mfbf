@@ -2,5 +2,3 @@ copier/vendor
 *swp
 updater/pkg/
 updater/src/
-etc/odbc.ini
-etc/odbcinst.ini
