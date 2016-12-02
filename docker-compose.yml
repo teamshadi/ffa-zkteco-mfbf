@@ -48,7 +48,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
     - db
-    - updater
+    - nats
     env_file: .env
     environment:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
