@@ -23,10 +23,16 @@ $client->connect();
 $sid = $client->subscribe("foo", function ($res) {
       echo("Received nats foo".PHP_EOL);
       //$res->reply("Hello, " . $res->getBody() . " !!!");
-      $copier = new \FfaZktecoMfbf\Copier();
-      $copier->locks->update();
-      $copier->copyLocksToOdbc(true);
-      echo("Completed copy".PHP_EOL);
+
+      // exceptions are just output to screen, without exiting the listener
+      try {
+        $copier = new \FfaZktecoMfbf\Copier();
+        $copier->locks->update();
+        $copier->copyLocksToOdbc(true);
+        echo("Completed copy".PHP_EOL);
+      } catch(\Exception $e) {
+        echo($e->getMessage());
+      }
 });
 
 
