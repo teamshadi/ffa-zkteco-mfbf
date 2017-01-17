@@ -1,7 +1,7 @@
 # fingerprints-adapter
 This is a server-side program that links the ZKTeco fingerprints machine database (MS Access file from ZKAccess 3.5)
 in FFA to Marketflow/Bankflow to log out users who are not in the building (and not let them log in).
-
+ 
 It is divided into the following parts:
 
 1. [updater](updater):
