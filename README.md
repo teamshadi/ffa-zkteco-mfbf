@@ -40,7 +40,7 @@ It is divided into the following parts:
     git clone https://github.com/shadiakiki1986/ffa-zkteco-mfbf
     cd ffa-zkteco-mfbf
     ```
-3. Place your copies of odbc.ini and odbcinst.ini to a `/etc/ffa-zkteco-mfbf-copier-odbc` folder
+3. Place your copies of odbc.ini and odbcinst.ini to `copier/etc/odbc` folder
  * a sample file is provided in `copier/etc/odbc/odbc-sample.ini`
  * all sources in the `odbc.ini` file will be used to copy to
  * note that fields `mfid_lb` and `bfid_lb` are used by default.

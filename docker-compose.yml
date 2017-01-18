@@ -54,7 +54,7 @@ services:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
     volumes:
     # will copy odbc.ini and odbcinst.ini, as well as apache2 config
-    - /etc/ffa-zkteco-mfbf-copier-odbc:/etc/ffa-zkteco-mfbf-copier-odbc
+    - ${PWD}/copier/etc/odbc:/etc/ffa-zkteco-mfbf-copier-odbc
     volumes_from:
     - updater:ro
     # no need to expose port since redirected internally in service "ui"
