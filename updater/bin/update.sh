@@ -91,7 +91,7 @@ rm $lockfile
 date > $lastupdate
 
 # publish even to nats server
-go run $ROOT/publish.go
+nats --server ${UPDATER_NATSURI} pub foo "help me"
 
 # TRIGGER webhooks
 # echo "updateLocks.php"

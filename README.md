@@ -133,7 +133,7 @@ export MYSQL_DATABASE=ffa_price_farm
 export MYSQL_USER=ffaFingerprints
 php bin/natsListener.php
 
-GOPATH=`pwd` go run bin/publish.go 
+docker-compose run --entrypoint "nats --server nats://localhost:4222" updater
 ```
 
 # TODO
