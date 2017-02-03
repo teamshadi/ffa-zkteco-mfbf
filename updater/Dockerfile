@@ -7,15 +7,7 @@ RUN apt-get -qq update > /dev/null \
       mdbtools mysql-client bc \
       expect cron man-db time \
       > /dev/null
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get -qq -y install \
-    git
-
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get -qq -y install \
-      gettext \
-      > /dev/null
-
+# do i still need those?   :       git gettext \
 
 # install MDBtoMysql if not there
 ENV UPDATER_WORKDIR /tmp/ffa-zkteco-mfbf
