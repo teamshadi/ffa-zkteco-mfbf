@@ -14,6 +14,8 @@ RUN apt-get -qq update > /dev/null \
       gettext \
       > /dev/null
 
+RUN wget https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
+
 VOLUME /etc/ffa-zkteco-mfbf-copier
 
 # Continue

@@ -5,7 +5,7 @@ RUN apt-get -qq update > /dev/null \
  && DEBIAN_FRONTEND=noninteractive \
     apt-get -qq -y install \
       mdbtools mysql-client bc \
-      expect cron man-db time golang \
+      expect cron man-db time \
       > /dev/null
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get -qq -y install \
@@ -28,8 +28,7 @@ VOLUME /data/ZKTeco
 
 WORKDIR /code
 
-ENV GOPATH=/code
-RUN go get github.com/nats-io/go-nats
+RUN wget https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
 
 # business as usual
 COPY . .

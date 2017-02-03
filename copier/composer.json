@@ -8,8 +8,7 @@
         }
     ],
     "require": {
-      "ext-pdo_mysql": "*",
-      "repejota/nats": "^0.8.0"
+      "ext-pdo_mysql": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.6",
