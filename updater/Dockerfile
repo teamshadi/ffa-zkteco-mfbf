@@ -20,7 +20,13 @@ VOLUME /data/ZKTeco
 
 WORKDIR /code
 
-RUN wget https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
+# merge with top apt for a later build
+RUN apt-get -qq update > /dev/null \
+ && DEBIAN_FRONTEND=noninteractive \
+    apt-get -qq -y install \
+      wget
+ 
+RUN wget --quiet https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
 
 # business as usual
 COPY . .
