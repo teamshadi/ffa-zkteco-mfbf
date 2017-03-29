@@ -1,5 +1,5 @@
--- On Mf PriceFarm ms sql d/b (once for lebanon and once for dubai)
-CREATE TABLE MF_USERS_LOCK(
+-- This is run for initializing the local MySql database
+CREATE TABLE INTERNAL_USERS_LOCK(
 USERID int,
 DEPTNAME                        varchar (60),
 mfid_lb  varchar (40),

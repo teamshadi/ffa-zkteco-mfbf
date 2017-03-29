@@ -7,4 +7,4 @@ if [ ! -f /etc/apache2/sites-enabled/copier.conf ]; then
   ln -s /etc/apache2/sites-available/copier.conf /etc/apache2/sites-enabled/copier.conf
 fi
 service apache2 start
-nats --server ${UPDATER_NATSURI} sub foo --cmd "php bin/natsListener.php" --token "help me"
+nats --server ${UPDATER_NATSURI} sub --cmd "php bin/natsListener.php" --token "help me" foo

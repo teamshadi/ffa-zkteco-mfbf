@@ -25,7 +25,7 @@ class Odbc {
       $db='db';
     }
 
-    // variable name in sync with updater/bin/update_MF_USERS_LOCK.sql
+    // variable name in sync with updater/bin/update_INTERNAL_USERS_LOCK.sql
     $mfid='mfid_'.$db;
     $bfid='bfid_'.$db;
 

@@ -1,5 +1,5 @@
 -- each user's current state in/out of bank based on "time" field but based on last-added row
-insert into MF_USERS_LOCK
+insert into INTERNAL_USERS_LOCK
 select distinct
 USERINFO.USERID,
 DEPARTMENTS.DEPTNAME,

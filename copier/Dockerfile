@@ -21,7 +21,7 @@ VOLUME /etc/ffa-zkteco-mfbf-copier
 # Continue
 WORKDIR /code
 COPY . .
-RUN composer install --quiet
 
 # LAUNCH
-CMD bash init.sh
+CMD composer install --quiet \
+  && bash init.sh

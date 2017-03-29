@@ -31,8 +31,8 @@ services:
       context: updater
       dockerfile: Dockerfile
     volumes:
-    # - /mnt/fingerprints/Program Files/ZKTeco/:/data/ZKTeco
-    - /mnt/minerva-laptop/ZKTeco/ZKAccess3.5:/data/ZKTeco
+    - /mnt/fingerprints/ZKTeco/ZKAccess3.5:/data/ZKTeco
+    # - /mnt/minerva-laptop/ZKTeco/ZKAccess3.5:/data/ZKTeco
     depends_on:
     - db
     - nats

@@ -72,20 +72,6 @@ bash $UPDATER_WORKDIR/MDBtoMySQL/MDBtoMySQL.sh \
   -t USERINFO,DEPARTMENTS,acc_monitor_log
 # acc_monitor_log \
 
-#
-#echo "Updating MF_USERS_LOCK table"
-#mysqlCmd="/usr/bin/mysql \
-#  --host=$UPDATER_MYSQLHOST \
-#  --user=$MYSQL_USER \
-#  --password=$MYSQL_PASSWORD \
-#  $MYSQL_DATABASE"
-# --silent 
-#  --port=3306
-# TODO
-# try to use mysql_config_editor in the dockerfile
-# to avoid the warning about inline password in mysql call above
-#mysqlCmd="mysql --login-path=myhostalias ffa_price_farm --silent"
-
 # unlock
 rm $lockfile
 date > $lastupdate

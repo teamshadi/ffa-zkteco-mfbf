@@ -13,6 +13,7 @@ It is divided into the following parts:
 
 2. [copier](copier):
  * copies lock/unlock table from local database (MySql) to a foreign database (SQL Server)
+   * these foreign databases are all ODBC DNS entries in the `odbc.ini` file mounted into `/etc/odbc`
  * triggers a user-defined web-hook
 
 3. [ui](ui):
@@ -31,7 +32,7 @@ It is divided into the following parts:
     mfid  varchar (40),
     bfid  varchar (40),
     Name varchar (40),
-    Locked boolean
+    Locked bit
     );
     ```
 2. clone the repository

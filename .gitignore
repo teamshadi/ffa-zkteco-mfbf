@@ -2,3 +2,4 @@ copier/vendor
 *swp
 copier/etc/odbc/odbc.ini
 copier/etc/odbc/odbcinst.ini
+docker-compose.sh
