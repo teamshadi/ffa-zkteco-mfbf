@@ -9,6 +9,12 @@ RUN apt-get -qq update > /dev/null \
       git gettext \
       > /dev/null
 
+# merge with top apt for a later build
+RUN apt-get -qq update > /dev/null \
+ && DEBIAN_FRONTEND=noninteractive \
+    apt-get -qq -y install \
+      wget
+
 # install MDBtoMysql if not there
 ENV UPDATER_WORKDIR /tmp/ffa-zkteco-mfbf
 WORKDIR /tmp/ffa-zkteco-mfbf
@@ -19,12 +25,6 @@ VOLUME /tmp/ffa-zkteco-mfbf
 VOLUME /data/ZKTeco
 
 WORKDIR /code
-
-# merge with top apt for a later build
-RUN apt-get -qq update > /dev/null \
- && DEBIAN_FRONTEND=noninteractive \
-    apt-get -qq -y install \
-      wget
  
 RUN wget --quiet https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
 
