@@ -9,6 +9,7 @@ class DbhWrapper {
   function __construct(\PDO $dbh, string $name) {
     $this->dbh = $dbh;
     $this->name = $name;
+    $this->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
   }
 
   public function query(string $sql) {

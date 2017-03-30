@@ -52,7 +52,7 @@ services:
     env_file: .env
     environment:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
-    - SQL_SERVER_TABLE=MF_USERS_LOCK_201703
+    - SQL_SERVER_TABLE=MF_USERS_LOCK_TEST201703
     volumes:
     # will copy odbc.ini and odbcinst.ini, as well as apache2 config
     - ${PWD}/copier/etc/odbc:/etc/ffa-zkteco-mfbf-copier-odbc

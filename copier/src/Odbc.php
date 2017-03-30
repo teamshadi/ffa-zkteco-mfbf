@@ -45,23 +45,18 @@ class Odbc {
       return;
     }
 
-    $query = [];
     foreach($secD as $x) {
-      array_push(
-        $query,
-        sprintf(
-          'insert into %s values ("%s","%s","%s","%s","%s")',
-          $this->tableName,
+      $this->dbh->dbh
+         ->prepare('insert into '.$this->tableName.' values (?,?,?,?,?)')
+         ->execute([
           $x['DEPTNAME'],
           $x[$mfid],
           $x[$bfid],
           $x['Name'],
           $x['Locked']
-        )
-      );
+        ]);
     }
 
-    $this->dbh->exec(implode('; ',$query));
   }
 
   public function get() {
