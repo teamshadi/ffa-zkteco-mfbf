@@ -23,5 +23,6 @@ WORKDIR /code
 COPY . .
 
 # LAUNCH
-CMD composer install --quiet \
+CMD echo "Launch" \
+  && composer install \
   && bash init.sh
