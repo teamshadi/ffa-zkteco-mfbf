@@ -77,7 +77,7 @@ rm $lockfile
 date > $lastupdate
 
 # publish even to nats server
-nats --server ${UPDATER_NATSURI} pub foo "help me"
+/sbin/nats --server ${UPDATER_NATSURI} pub foo "help me"
 
 # TRIGGER webhooks
 # echo "updateLocks.php"

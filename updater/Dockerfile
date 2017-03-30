@@ -17,10 +17,12 @@ RUN apt-get -qq update > /dev/null \
 
 RUN wget --quiet https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
 
+RUN  apt-get -qq    update \
+  && DEBIAN_FRONTEND=noninteractive \
+         apt-get -qq -y install rsyslog
+
 # install MDBtoMysql if not there
 ENV UPDATER_WORKDIR /tmp/ffa-zkteco-mfbf
-WORKDIR /tmp/ffa-zkteco-mfbf
-VOLUME /tmp/ffa-zkteco-mfbf
 
 # Set a volume that can be mounted from host
 VOLUME /data/ZKTeco
@@ -32,8 +34,6 @@ COPY . .
 RUN  ln -s /code/MDBtoMySQL/MDBtoMySQL.sh /usr/bin/MDBtoMySQL.sh \
   && ls -al /usr/bin/MDBtoMySQL.sh \
   && chmod +x /usr/bin/MDBtoMySQL.sh
-
-RUN touch /var/log/cron.log
 
 # CONFIGURE MYSQL PASSWORD
 # TODO, use mysql_config_editor to avoid the warnings of "password is not safe to pass in mysql CLI call"
@@ -51,4 +51,5 @@ ENV TZ=Asia/Beirut
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # SET CMD
-CMD bash bin/init.sh
+RUN chmod +x bin/entry.sh
+CMD bin/entry.sh

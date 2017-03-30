@@ -53,6 +53,7 @@ It is divided into the following parts:
   * bankflow dubai: OPHONE
 
 3. pull git submodules: `git submodule update --init --recursive`
+3. Update the table name in the Marketflow SQL Server to which you want to copy the locks: `SQL_SERVER_TABLE` in `docker-compose.yml`
 3. run services with `docker-compose`
 ```
 export MYSQL_PASSWORD=choosepass

@@ -14,7 +14,15 @@ class Odbc {
       $dbh = $fac->odbc($first);
     }
     $this->dbh = $dbh;
-    $this->tableName = "MF_USERS_LOCK";
+    $this->tableName = $this->getenvOrFail("SQL_SERVER_TABLE");
+  }
+
+  private function getenvOrFail(string $name) {
+    $value = getenv($name);
+    if(!$value) {
+      throw new \Exception("Env var $name undefined");
+    }
+    return $value;
   }
 
   // secD: output from Locks->raw
