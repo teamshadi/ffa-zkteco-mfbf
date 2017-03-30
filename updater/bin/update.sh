@@ -62,7 +62,7 @@ fi
 
 # perform sync
 # Tables needed are: acc_monitor_log USERINFO DEPARTMENTS
-bash $UPDATER_WORKDIR/MDBtoMySQL/MDBtoMySQL.sh \
+MDBtoMySQL.sh \
   -m "$mdbLocal" \
   -d "$MYSQL_DATABASE" \
   -u "$MYSQL_USER" \

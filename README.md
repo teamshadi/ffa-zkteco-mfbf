@@ -52,6 +52,7 @@ It is divided into the following parts:
   * marketflow dubai: SSN
   * bankflow dubai: OPHONE
 
+3. pull git submodules: `git submodule update --init --recursive`
 3. run services with `docker-compose`
 ```
 export MYSQL_PASSWORD=choosepass

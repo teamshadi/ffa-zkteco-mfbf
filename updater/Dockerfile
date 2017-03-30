@@ -15,21 +15,23 @@ RUN apt-get -qq update > /dev/null \
     apt-get -qq -y install \
       wget
 
+RUN wget --quiet https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
+
 # install MDBtoMysql if not there
 ENV UPDATER_WORKDIR /tmp/ffa-zkteco-mfbf
 WORKDIR /tmp/ffa-zkteco-mfbf
-RUN git clone https://github.com/shadiakiki1986/MDBtoMySQL
 VOLUME /tmp/ffa-zkteco-mfbf
 
 # Set a volume that can be mounted from host
 VOLUME /data/ZKTeco
 
 WORKDIR /code
- 
-RUN wget --quiet https://github.com/shadiakiki1986/nats-cli/releases/download/0.0.4.2/nats-amd64 -O /sbin/nats && chmod +x /sbin/nats
 
 # business as usual
 COPY . .
+RUN  ln -s /code/MDBtoMySQL/MDBtoMySQL.sh /usr/bin/MDBtoMySQL.sh \
+  && ls -al /usr/bin/MDBtoMySQL.sh \
+  && chmod +x /usr/bin/MDBtoMySQL.sh
 
 RUN touch /var/log/cron.log
 
