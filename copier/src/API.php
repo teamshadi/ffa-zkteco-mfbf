@@ -70,6 +70,10 @@ class API {
     }
   }
 
+  public function lastupdateFilename() {
+    return "/tmp/ffa-zkteco-mfbf/copier/lastupdate.txt";
+  }
+
   private function get($get) {
     switch($get['action']) {
       case "lastUpdate":
@@ -81,7 +85,7 @@ class API {
         $maxt = $this->checkinout->getMax();
         if($maxt) $out['lastcheckinout']=$maxt;
 
-        $fn="/tmp/ffa-zkteco-mfbf/lastupdate.txt";
+        $fn=$this->lastupdateFilename();
         if(file_exists($fn)) {
           $last = trim(file_get_contents($fn));
           if($last) $out['lastUpdate']=$last;
