@@ -3,3 +3,4 @@ copier/vendor
 copier/etc/odbc/odbc.ini
 copier/etc/odbc/odbcinst.ini
 docker-compose.sh
+docker-compose.override.yml

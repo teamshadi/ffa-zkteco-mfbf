@@ -30,9 +30,8 @@ services:
     build:
       context: updater
       dockerfile: Dockerfile
-    volumes:
-    - /mnt/fingerprints/ZKTeco/ZKAccess3.5:/data/ZKTeco
-    # - /mnt/minerva-laptop/ZKTeco/ZKAccess3.5:/data/ZKTeco
+    #volumes:
+    #- /path/to/ZKAccess3.5:/data/ZKTeco # <<<<< replace with your own folder
     depends_on:
     - db
     - nats
@@ -41,6 +40,10 @@ services:
     env_file: .env
     environment:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
+    # URLs of the form https://hchk.io/123-123-123-123. Check https://healthchecks.io/
+    # one for each cron job in updater
+    - HCHK_UPDATE=$HCHK_UPDATE
+    - HCHK_CHECKMOUNT=$HCHK_CHECKMOUNT
 
   copier:
     build:
@@ -52,7 +55,7 @@ services:
     env_file: .env
     environment:
     - MYSQL_PASSWORD=$MYSQL_PASSWORD
-    - SQL_SERVER_TABLE=MF_USERS_LOCK_TEST201703
+    - SQL_SERVER_TABLE=MF_USERS_LOCK # _TEST201703
     volumes:
     # will copy odbc.ini and odbcinst.ini, as well as apache2 config
     - ${PWD}/copier/etc/odbc:/etc/ffa-zkteco-mfbf-copier-odbc

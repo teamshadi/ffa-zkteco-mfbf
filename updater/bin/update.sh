@@ -39,7 +39,7 @@ if [ -f $lockfile ]; then
     fi
 	else
 		echo "`date -R`: lock file exists but is not stale ($dt secs old) ... aborting: " $lockfile
-		exit
+		exit 1
 	fi
 else
   echo "`date -R`: fingerprints-adapter update.sh start"

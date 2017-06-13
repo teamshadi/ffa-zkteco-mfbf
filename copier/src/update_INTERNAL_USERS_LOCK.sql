@@ -1,7 +1,7 @@
 -- each user's current state in/out of bank based on "time" field but based on last-added row
 insert into INTERNAL_USERS_LOCK
 select distinct
-USERINFO.USERID,
+USERINFO.Badgenumber as USERID,
 DEPARTMENTS.DEPTNAME,
 
 -- below mfid/bfid variables also used in copier/src/Odbc#set()
@@ -46,9 +46,9 @@ from (
 	) a on a.pin=acc_monitor_log.pin and a.id=acc_monitor_log.time -- id / time
 	union -- add absent people ... this is very slow
 	(
-		select USERINFO.USERID,'1' as state,'1990-01-01' as id
+		select USERINFO.Badgenumber as pin,'1' as state,'1990-01-01' as time
 		from USERINFO
-		where USERINFO.USERID not in (
+		where USERINFO.Badgenumber not in (
 			SELECT distinct pin
 			FROM acc_monitor_log
 			where time>=curdate()
@@ -56,7 +56,7 @@ from (
 	)
 
 ) acc_monitor_log
-left join USERINFO on acc_monitor_log.pin=USERINFO.USERID
+left join USERINFO on acc_monitor_log.pin=USERINFO.Badgenumber
 left join DEPARTMENTS on DEPARTMENTS.DEPTID=USERINFO.DEFAULTDEPTID
-left join MF_USERS_STATE on USERINFO.USERID=MF_USERS_STATE.USERID
+left join MF_USERS_STATE on USERINFO.Badgenumber=MF_USERS_STATE.USERID
 ;

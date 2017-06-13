@@ -57,6 +57,8 @@ It is divided into the following parts:
 3. run services with `docker-compose`
 ```
 export MYSQL_PASSWORD=choosepass
+export HCHK_UPDATE=https://hchk.io/123-123-123-123
+export HCHK_CHECKMOUNT=https://hchk.io/123-123-123-123
 docker-compose up --build --abort-on-container-exit
 ```
 
