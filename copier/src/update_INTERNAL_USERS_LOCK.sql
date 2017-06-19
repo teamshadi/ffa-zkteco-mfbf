@@ -14,7 +14,7 @@ DEPARTMENTS.DEPTNAME,
 -- 2017-06-19 changed the fields above to the below
 USERINFO.Education as mfid_lb,
 USERINFO.TITLE as mfid_db,
-USERINFO.country as bfid_lb,
+USERINFO.contry as bfid_lb,
 USERINFO.CITY as bfid_db,
 
 USERINFO.Name,
