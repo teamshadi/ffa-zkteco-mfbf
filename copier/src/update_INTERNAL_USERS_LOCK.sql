@@ -4,11 +4,18 @@ select distinct
 USERINFO.Badgenumber as USERID,
 DEPARTMENTS.DEPTNAME,
 
+-- 2015-xx-xx fields in which we're filling marketflow/bankflow IDs
 -- below mfid/bfid variables also used in copier/src/Odbc#set()
-USERINFO.MINZU as mfid_lb,
-USERINFO.TITLE as bfid_lb,
-USERINFO.SSN as mfid_db,
-USERINFO.OPHONE as bfid_db,
+-- USERINFO.MINZU as mfid_lb,
+-- USERINFO.TITLE as bfid_lb,
+-- USERINFO.SSN as mfid_db,
+-- USERINFO.OPHONE as bfid_db,
+
+-- 2017-06-19 changed the fields above to the below
+USERINFO.Education as mfid_lb,
+USERINFO.TITLE as mfid_db,
+USERINFO.country as bfid_lb,
+USERINFO.CITY as bfid_db,
 
 USERINFO.Name,
 case(MF_USERS_STATE.state)
