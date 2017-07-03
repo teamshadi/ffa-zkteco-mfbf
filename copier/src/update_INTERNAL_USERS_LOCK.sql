@@ -59,6 +59,7 @@ from (
 			SELECT distinct pin
 			FROM acc_monitor_log
 			where time>=curdate()
+      and pin is not null
 		)
 	)
 
